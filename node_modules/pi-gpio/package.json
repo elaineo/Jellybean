@@ -1,0 +1,58 @@
+{
+  "author": {
+    "name": "Rakesh Pai",
+    "email": "rakeshpai@gmail.com"
+  },
+  "name": "pi-gpio",
+  "description": "A simple node.js-based GPIO helper for the Raspberry Pi",
+  "version": "0.0.8",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/rakeshpai/pi-gpio.git"
+  },
+  "homepage": "https://github.com/rakeshpai/pi-gpio",
+  "main": "./pi-gpio",
+  "bugs": {
+    "url": "https://github.com/rakeshpai/pi-gpio/issues"
+  },
+  "tags": [
+    "raspberry",
+    "pi",
+    "gpio",
+    "simple"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "1.x",
+    "should": "1.x"
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "gitHead": "065401269ee92e7af8ee981aaa5de5c9cbee6090",
+  "_id": "pi-gpio@0.0.8",
+  "_shasum": "85636bd59c8aa6002671206aa372f57f3f2c3d54",
+  "_from": "pi-gpio@*",
+  "_npmVersion": "2.14.2",
+  "_nodeVersion": "4.0.0",
+  "_npmUser": {
+    "name": "rakeshpai",
+    "email": "rakeshpai@errorception.com"
+  },
+  "maintainers": [
+    {
+      "name": "rakeshpai",
+      "email": "rakeshpai@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "85636bd59c8aa6002671206aa372f57f3f2c3d54",
+    "tarball": "http://registry.npmjs.org/pi-gpio/-/pi-gpio-0.0.8.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/pi-gpio/-/pi-gpio-0.0.8.tgz"
+}
