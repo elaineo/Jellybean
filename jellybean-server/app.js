@@ -48,7 +48,8 @@ app.get('/', function(req, res){
 });
 
 app.get('/beans', function(req, res){
-  wsServer.broadcast("received some beans")
+  wsServer.broadcast("received some beans");
+  res.sendStatus(200);
 });
 
 wsServer.broadcast = function broadcast(data) {

@@ -7,10 +7,14 @@ var app = express();
 var WebSocket = require('ws');
 
 // pi only
-if ('test' == app.get('env')) 
+if ('test' == app.get('env')) {
   var gpio = null;
-else
+  var connection = new WebSocket('ws://127.0.0.1:8080');
+}
+else {
   var gpio = require("pi-gpio");
+  var connection = new WebSocket('ws://54.174.77.180');
+}
 
 app.set('port', process.env.PORT || 4000);
 
@@ -23,7 +27,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-var connection = new WebSocket('ws://127.0.0.1:3000');
 connection.on('open', function open() {
   connection.send('something');
 });
