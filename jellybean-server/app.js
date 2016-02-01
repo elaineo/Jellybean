@@ -51,6 +51,11 @@ app.get('/beans', function(req, res){
   wsServer.broadcast("received some beans");
   res.sendStatus(200);
 });
+app.post('/beans', function(req, res){
+  console.log(req.body);
+  wsServer.broadcast("received some beans");
+  res.sendStatus(200);
+});
 
 wsServer.broadcast = function broadcast(data) {
   wsServer.clients.forEach(function each(client) {
