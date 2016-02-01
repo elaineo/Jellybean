@@ -6,6 +6,6 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "websocket": "^1.0.22"
+    "ws": "^1.0.1"
   }
 }
