@@ -20,15 +20,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// serve a page
-app.get('/', function(req, res){
-  res.render('index.html');
-});
-
-app.get('/beans', function(req, res){
-  res.render('index.html');
-});
-
 var server = require('http').createServer(app);
 
 server.listen(app.get('port'), function() { 
@@ -49,6 +40,15 @@ wsServer.on('connection', function connection(ws) {
   });
 
   ws.send('hi client');
+});
+
+// serve a page
+app.get('/', function(req, res){
+  res.render('index.html');
+});
+
+app.get('/beans', function(req, res){
+  wsServer.broadcast("received some beans")
 });
 
 wsServer.broadcast = function broadcast(data) {
