@@ -1,12 +1,16 @@
 var express = require('express');
 var path = require('path');
-var gpio = require("pi-gpio");
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var app = express();
 
 var WebSocket = require('ws');
 
+// pi only
+if ('test' == app.get('env')) 
+  var gpio = null;
+else
+  var gpio = require("pi-gpio");
 
 app.set('port', process.env.PORT || 4000);
 
@@ -30,6 +34,10 @@ connection.on('error', function (error) {
 
 connection.on('message', function(data, flags) {
   console.log(data);
+  
+  // not on the pi
+  if ('test' == app.get('env')) return;
+
   gpio.open(16, "output", function(err) {     // Open pin 16 for output
     gpio.write(16, 1, function() {          // Set pin 16 high (1)
         console.log("received something");
