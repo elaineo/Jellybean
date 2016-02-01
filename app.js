@@ -19,9 +19,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 gpio.open(16, "output", function(err) {     // Open pin 16 for output
     gpio.write(16, 1, function() {          // Set pin 16 high (1)
         console.log("received something");
-        gpio.close(16);                     // Close pin 16
+        setTimeout(stopMotor,5000);
     });
 });
+
+// debug 
+function stopMotor () {
+    gpio.close(16);                     // Close pin 16
+}
 
 // routes
 app.get('/', function(req, res) {
@@ -30,7 +35,6 @@ app.get('/', function(req, res) {
 
 
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
 
 http.listen(app.get('port'), '0.0.0.0', function() {
     console.log('Express server listening on port ' + app.get('port'));
