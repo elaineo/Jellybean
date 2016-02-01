@@ -6,6 +6,9 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "express": "4.12.x",
+    "body-parser": "1.13.2",
+    "morgan": "1.6.1",
     "ws": "^1.0.1"
   }
 }
