@@ -30,21 +30,20 @@ connection.on('error', function (error) {
 
 connection.on('message', function(data, flags) {
   console.log(data);
-});
-
-/*
-gpio.open(16, "output", function(err) {     // Open pin 16 for output
+  gpio.open(16, "output", function(err) {     // Open pin 16 for output
     gpio.write(16, 1, function() {          // Set pin 16 high (1)
         console.log("received something");
         setTimeout(stopMotor,5000);
+      });
     });
 });
+
 
 // debug 
 function stopMotor () {
     gpio.close(16);                     // Close pin 16
 }
-*/
+
 // routes
 app.get('/', function(req, res) {
   res.render('index');
