@@ -25,6 +25,16 @@ app.get('/', function(req, res) {
 });
 
 
+
+
+gpio.open(16, "output", function(err) {     // Open pin 16 for output
+    gpio.write(16, 1, function() {          // Set pin 16 high (1)
+        console.log("hello")
+        gpio.close(16);                     // Close pin 16
+    });
+});
+
+
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
