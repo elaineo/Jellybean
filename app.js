@@ -1,6 +1,6 @@
 var express = require('express');
 var path = require('path');
-var gpio = require("rpi-gpio");
+var gpio = require("pi-gpio");
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var app = express();
@@ -16,13 +16,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-gpio.setup(16, gpio.DIR_OUT, write);
- 
-function write() {
-    gpio.write(16, true, function(err) {
-        if (err) throw err;
-        console.log('Written to pin');
+gpio.open(16, "output", function(err) {     // Open pin 16 for output
+    gpio.write(16, 1, function() {          // Set pin 16 high (1)
+        console.log("received something");
+        gpio.close(16);                     // Close pin 16
     });
+});
 
 // routes
 app.get('/', function(req, res) {
