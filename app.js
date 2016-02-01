@@ -1,6 +1,6 @@
 var express = require('express');
 var path = require('path');
-//var gpio = require("pi-gpio");
+var gpio = require("pi-gpio");
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var app = express();
