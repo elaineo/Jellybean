@@ -1,6 +1,6 @@
 var express = require('express');
 var path = require('path');
-var gpio = require("pi-gpio");
+var gpio = require("rpi-gpio");
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var app = express();
@@ -16,12 +16,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-gpio.open(1, "output", function(err) {     // Open pin 16 for output
-    gpio.write(1, 1, function() {          // Set pin 16 high (1)
-        console.log("bitcoin received");
-        gpio.close(1);                     // Close pin 16
+gpio.setup(16, gpio.DIR_OUT, write);
+ 
+function write() {
+    gpio.write(16, true, function(err) {
+        if (err) throw err;
+        console.log('Written to pin');
     });
-});
 
 // routes
 app.get('/', function(req, res) {
