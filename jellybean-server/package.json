@@ -7,6 +7,8 @@
   },
   "dependencies": {
     "express": "4.12.x",
+    "ejs": "*",
+    "errorhandler": "1.4.1",
     "body-parser": "1.13.2",
     "morgan": "1.6.1",
     "ws": "^1.0.1"

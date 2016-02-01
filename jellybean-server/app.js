@@ -10,6 +10,8 @@ var logger = require('morgan');
 
 var app = express();
 
+app.set('port', process.env.PORT || 8080);
+
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
@@ -20,26 +22,27 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // serve a page
 app.get('/', function(req, res){
-  res.render('index.html', { title: 'Watson\'s Book Shop' });
+  res.render('index.html');
+});
+
+app.get('/beans', function(req, res){
+  res.render('index.html');
 });
 
 var server = require('http').createServer(app);
 
-server.listen(3000, function() { 
-    console.log((new Date()) + " Server is listening on port 3000");
+server.listen(app.get('port'), function() { 
+    console.log((new Date()) + " Server is listening on port" + app.get('port'));
 });
 
-// create the server
+// create the web socket server
 var wsServer = new WebSocketServer({
     server: server
 });
 
-// WebSocket server
 wsServer.on('connection', function connection(ws) {
   var location = url.parse(ws.upgradeReq.url, true);
   console.log((new Date()) + ' Connection from origin ' + location + '.');
-  // you might use location.query.access_token to authenticate or share sessions
-  // or ws.upgradeReq.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
 
   ws.on('message', function incoming(message) {
     console.log('received: %s', message);
@@ -47,3 +50,9 @@ wsServer.on('connection', function connection(ws) {
 
   ws.send('hi client');
 });
+
+wsServer.broadcast = function broadcast(data) {
+  wsServer.clients.forEach(function each(client) {
+    client.send(data);
+  });
+};
