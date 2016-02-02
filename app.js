@@ -1,3 +1,6 @@
+/*
+    Vending machine physical controller
+*/
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
@@ -29,9 +32,20 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// debug 
-function stopMotor () {
-    gpio.close(16);                     // Close pin 16
+// Dispense goods
+function dispense (qty) {
+  startMotor (16, qty);
+  // LED pin
+  startMotor (18, qty);
+}
+
+function startMotor (p, time) {
+  gpio.open(p, "output", function(err) {   
+    gpio.write(p, 1, function() {          
+      console.log("received something");
+      setTimeout(gpio.close(p), time);
+    });
+  });  
 }
 
 var http = require('http').Server(app);
@@ -63,17 +77,17 @@ function openSocket(reconnectAttempts){
 
   connection.on('message', function(data, flags) {
     console.log(data);
+
+    // TODO! Amount will be in satoshis
+    // normalize somehow
+    var amount = parseInt(data.amount);
     
     // not on the pi
     if ('test' == app.get('env')) return;
 
-    gpio.open(16, "output", function(err) {     // Open pin 16 for output
-      gpio.write(16, 1, function() {          // Set pin 16 high (1)
-          console.log("received something");
-          setTimeout(stopMotor,5000);
-        });
-      });
+    dispense(Math.floor(amount/10));
   });
+
   connection.on('ping', function () {
   });
 
