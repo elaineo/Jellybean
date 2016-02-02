@@ -35,7 +35,7 @@ var wsServer = new WebSocketServer({
 
 wsServer.on('connection', function connection(ws) {
   var location = url.parse(ws.upgradeReq.url, true);
-  console.log((new Date()) + ' Connection from origin ' + location + '.');
+  console.log((new Date()) + ' Connection from origin ' + JSON.parse(location) + '.');
 
   ws.on('message', function incoming(message) {
     console.log('received: %s', message);
@@ -62,7 +62,8 @@ app.get('/beans', function(req, res){
 });
 
 app.post('/beans', function(req, res){
-  console.log(req.body);
+  var tx = JSON.parse(req.body);
+  console.log(tx);
   // parse body
   var msg = {
     "message": "received some beans",
