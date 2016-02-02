@@ -7,6 +7,8 @@ var app = express();
 var WebSocket = require('ws');
 
 var PING_TIME = 20000;
+var DELAY_TIME = 1.5;
+var MAX_RETRIES = 10;
 
 // pi only
 if ('test' == app.get('env')) {
@@ -22,22 +24,17 @@ var connection = new WebSocket(wsurl);
 
 app.set('port', process.env.PORT || 4000);
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
 
-connection.on('open', function open() {
-  connection.send('something');
+connection.on('open', function () {
+  connection.send('Hello from client');
 });
 
-connection.on('close', function open() {
+connection.on('close', function () {
   console.log('closed, reconnecting');
-  setTimeout (keepAlive, PING_TIME);
+  setTimeout (keepAlive(0), PING_TIME);
 });
 
 connection.on('ping', function () {
@@ -46,7 +43,7 @@ connection.on('ping', function () {
 
 connection.on('error', function (error) {
   console.log(error);
-  setTimeout (keepAlive, PING_TIME);
+  setTimeout (keepAlive(0), PING_TIME);
 });
 
 connection.on('message', function(data, flags) {
@@ -69,31 +66,35 @@ function stopMotor () {
     gpio.close(16);                     // Close pin 16
 }
 
-// routes
-app.get('/', function(req, res) {
-  res.render('index');
-});
-
-
 var http = require('http').Server(app);
 
 http.listen(app.get('port'), '0.0.0.0', function() {
     console.log('Express server listening on port ' + app.get('port'));
 });
 
- 
-function keepAlive(){
+function keepAlive(reconnectAttempts){
+  if (reconnectAttempts > MAX_RETRIES) {
+    console.log('Max retries reached');
+    return
+  }
   connection = new WebSocket(wsurl);
+
   var localConn = connection;
 
   var timeout = setTimeout(function() {
                   console.log('ReconnectingWebSocket timed out');
                   localConn.close();
-                  keepAlive();
+                  keepAlive(reconnectAttempts++);
                 }, PING_TIME*10);
 
   connection.on('open', function() {
     clearTimeout(timeout);
     console.log('Reconnected')
   });
+  connection.on('error', function (error) {
+    clearTimeout(timeout);
+    var longTime = PING_TIME * Math.pow(DELAY_TIME, reconnectAttempts);
+    setTimeout (keepAlive(reconnectAttempts++), longTime);
+  });
+
 }
