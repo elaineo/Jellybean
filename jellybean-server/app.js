@@ -8,6 +8,8 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
 
+var PING_TIME = 20000;
+
 var app = express();
 
 app.set('port', process.env.PORT || 8080);
@@ -23,7 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 var server = require('http').createServer(app);
 
 server.listen(app.get('port'), function() { 
-    console.log((new Date()) + " Server is listening on port" + app.get('port'));
+    console.log((new Date()) + " Server is listening on port " + app.get('port'));
 });
 
 // create the web socket server
@@ -38,9 +40,11 @@ wsServer.on('connection', function connection(ws) {
   ws.on('message', function incoming(message) {
     console.log('received: %s', message);
   });
+  setTimeout(wsServer.keepAlive, PING_TIME);
 
   ws.send('hi client');
 });
+
 
 // serve a page
 app.get('/', function(req, res){
@@ -61,4 +65,11 @@ wsServer.broadcast = function broadcast(data) {
   wsServer.clients.forEach(function each(client) {
     client.send(data);
   });
+};
+
+wsServer.keepAlive = function keepalive() {
+  wsServer.clients.forEach(function each(client) {
+    client.ping();
+  });
+  setTimeout(wsServer.keepAlive, PING_TIME);
 };
