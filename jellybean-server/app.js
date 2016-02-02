@@ -62,8 +62,8 @@ app.get('/beans', function(req, res){
 });
 
 app.post('/beans', function(req, res){
-  var tx = JSON.parse(req.body);
-  console.log(tx);
+  var tx = req.body;
+  console.log(tx.outputs);
   // parse body
   var msg = {
     "message": "received some beans",
