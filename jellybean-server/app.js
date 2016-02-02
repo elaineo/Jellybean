@@ -42,7 +42,7 @@ wsServer.on('connection', function connection(ws) {
   });
   setTimeout(wsServer.keepAlive, PING_TIME);
 
-  ws.send('hi client');
+  ws.send('Greetings, client!');
 });
 
 
