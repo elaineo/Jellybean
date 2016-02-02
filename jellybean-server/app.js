@@ -52,12 +52,24 @@ app.get('/', function(req, res){
 });
 
 app.get('/beans', function(req, res){
-  wsServer.broadcast("received some beans");
+  var msg = {
+    "message": "received some beans",
+    "sender": "Nick",
+    "amount": 10
+  }
+  wsServer.broadcast(JSON.stringify(msg));
   res.sendStatus(200);
 });
+
 app.post('/beans', function(req, res){
   console.log(req.body);
-  wsServer.broadcast("received some beans");
+  // parse body
+  var msg = {
+    "message": "received some beans",
+    "sender": "Nick",
+    "amount": 10
+  }
+  wsServer.broadcast(msg);
   res.sendStatus(200);
 });
 
