@@ -6,11 +6,12 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "4.12.x",
+    "body-parser": "1.13.2",
     "ejs": "*",
     "errorhandler": "1.4.1",
-    "body-parser": "1.13.2",
+    "express": "4.12.x",
     "morgan": "1.6.1",
+    "util": "^0.10.3",
     "ws": "^1.0.1"
   }
 }

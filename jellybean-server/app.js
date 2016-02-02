@@ -7,13 +7,12 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
-
-var PING_TIME = 20000;
+var util = require('util');
+var http = require('http');
 
 var app = express();
 
 app.set('port', process.env.PORT || 8080);
-
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
@@ -22,7 +21,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-var server = require('http').createServer(app);
+var PING_TIME = 20000;
+
+if ('test' == app.get('env')) {
+  var ADDRESS = '2NB4uLhhyWFxAUEgc8ZC1PSiz66yBqznnj3';
+  var ADDRESS_PATH = '/v1/btc/test3/payments?token=76a0fb3fe8f4a9a6df085958be202a9d';
+}
+else {
+  var ADDRESS = '1ELainEb2moSBxWyTJGpQSS6EjRL6H7Cdi';
+  var ADDRESS_PATH = '/v1/btc/main/payments?token=76a0fb3fe8f4a9a6df085958be202a9d';
+}
+
+var server = http.createServer(app);
 
 server.listen(app.get('port'), function() { 
     console.log((new Date()) + " Server is listening on port " + app.get('port'));
@@ -35,7 +45,7 @@ var wsServer = new WebSocketServer({
 
 wsServer.on('connection', function connection(ws) {
   var location = url.parse(ws.upgradeReq.url, true);
-  console.log((new Date()) + ' Connection from origin ' + JSON.parse(location) + '.');
+  console.log((new Date()) + ' Connection from origin ' + util.inspect(location, false, null) + '.');
 
   ws.on('message', function incoming(message) {
     console.log('received: %s', message);
@@ -51,24 +61,37 @@ app.get('/', function(req, res){
   res.render('index.html');
 });
 
+app.get('/address', function(req, res){
+  generateAddress(res); 
+});
+
 app.get('/beans', function(req, res){
   var msg = {
     "message": "received some beans",
     "sender": "Nick",
-    "amount": 10
+    "amount": 10000
   }
   wsServer.broadcast(JSON.stringify(msg));
   res.sendStatus(200);
 });
 
 app.post('/beans', function(req, res){
-  var tx = req.body;
-  console.log(tx.outputs);
+  console.log(req.body);
+
+  var amount = req.body.value;
+  var address = req.body.input_address;
+
+  if (amount == "undefined") {
+    console.log("invalid transaction;")
+    res.sendStatus(400);
+    return;
+  }
+
   // parse body
   var msg = {
     "message": "received some beans",
     "sender": "Nick",
-    "amount": 10
+    "amount": parseInt(amount)
   }
   wsServer.broadcast(msg);
   res.sendStatus(200);
@@ -86,3 +109,30 @@ wsServer.keepAlive = function keepalive() {
   });
   setTimeout(wsServer.keepAlive, PING_TIME);
 };
+
+function generateAddress(response) {
+  var post_options = {
+        host: 'api.blockcypher.com',
+        port: '80',
+        path: ADDRESS_PATH,
+        method: 'POST',
+  };
+
+  // Set up the request
+  var post_req = http.request(post_options, function(res) {
+      res.setEncoding('utf8');
+      // get the input address
+      res.on('data', function (data) {
+          var d = JSON.parse(data)
+          response.write(JSON.stringify({'address': d.input_address}));
+          response.end();
+      });
+  });
+
+  var query = {
+      'destination' : ADDRESS,
+      'callback_url': 'http://54.174.77.180/beans'
+  }
+  post_req.write(JSON.stringify(query));
+  post_req.end();
+}
