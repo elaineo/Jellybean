@@ -85,7 +85,7 @@ function openSocket(reconnectAttempts){
 
     // TODO! Amount will be in satoshis
     // normalize somehow
-    if ("amount" in data)
+    if ((data.constructor == Object) && ("amount" in data))
       var amount = parseInt(data.amount);
     else 
       var amount = 5000;
