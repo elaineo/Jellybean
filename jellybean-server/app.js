@@ -113,7 +113,7 @@ wsServer.broadcast = function broadcast(data) {
 
 wsServer.keepAlive = function keepalive() {
   wsServer.clients.forEach(function each(client) {
-    client.ping();
+    try { client.ping(); } catch (e) { console.log(client); }
   });
   setTimeout(wsServer.keepAlive, PING_TIME);
 };
