@@ -47,6 +47,7 @@ function startMotor (p, time) {
     });
   });  
 }
+startMotor(16,5000);
 
 var http = require('http').Server(app);
 
