@@ -85,11 +85,15 @@ function openSocket(reconnectAttempts){
 
     // TODO! Amount will be in satoshis
     // normalize somehow
-    if ((data.constructor == Object) && ("amount" in data))
-      var amount = parseInt(data.amount);
-    else 
-      var amount = 5000;
     
+    try {
+      var obj = JSON.parse(data);
+      var amount = parseInt(obj.amount);
+    }
+    catch (e) {
+      var amount = 5000;  
+    }
+          
     // not on the pi
     if ('test' == app.get('env')) return;
 
