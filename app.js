@@ -37,7 +37,7 @@ function startMotor (p, time) {
   gpio.open(p, "output", function(err) {   
     gpio.write(p, 1, function() {          
       console.log("writing to " + p);
-      setTimeout(gpio.close(p), time);
+      setTimeout(function() { gpio.close(p); }, time);
     });
   });  
 }

@@ -1,5 +1,7 @@
 /*
-    GPIO test */ var gpio = require("pi-gpio");
+    GPIO test 
+*/ 
+var gpio = require("pi-gpio");
 
 var p = 18;
   gpio.open(p, "output", function(err) {
