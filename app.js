@@ -33,6 +33,13 @@ function dispense (qty) {
   startMotor (18, qty);
 }
 
+function cleanup() {
+  gpio.close(16);
+  gpio.close(18);
+}
+
+cleanup();
+
 function startMotor (p, time) {
   gpio.open(p, "output", function(err) {   
     gpio.write(p, 1, function() {          
@@ -67,7 +74,7 @@ function openSocket(reconnectAttempts){
     clearTimeout(timeout);
     console.log('Connected');
     connection.send('Hello from client');
-    dispense(Math.floor(5000));
+    dispense(Math.floor(3000));
   });
 
   connection.on('message', function(data, flags) {
