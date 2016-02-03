@@ -1,19 +1,14 @@
 /*
-    Vending machine physical controller
-*/
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
-var app = express();
+    Vending machine physical controller */ var express = 
+require('express'); var path = require('path'); var logger = 
+require('morgan'); var bodyParser = require('body-parser'); var app = 
+express();
 
 var WebSocket = require('ws');
 
-var PING_TIME = 20000;
-var DELAY_TIME = 1.5;
-var MAX_RETRIES = 10;
+var PING_TIME = 20000; var DELAY_TIME = 1.5; var MAX_RETRIES = 10;
 
-// pi only
+// pi only 
 if ('test' == app.get('env')) {
   var gpio = null;
   var wsurl = 'ws://127.0.0.1:8080'
@@ -23,8 +18,7 @@ else {
   var wsurl = 'ws://54.174.77.180';
 }
 
-var connection;
-openSocket(0);
+var connection; openSocket(0);
 
 app.set('port', process.env.PORT || 4000);
 
@@ -86,7 +80,7 @@ function openSocket(reconnectAttempts){
     // not on the pi
     if ('test' == app.get('env')) return;
 
-    dispense(amount));
+    dispense(amount);
   });
 
   connection.on('ping', function () {

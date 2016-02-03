@@ -1,15 +1,14 @@
 /*
-    GPIO test
-*/
-var gpio = require("pi-gpio");
+    GPIO test */ var gpio = require("pi-gpio");
 
-function startMotor (p, time) {
-  gpio.open(p, "output", function(err) {   
-    gpio.write(p, 1, function() {          
+var p = 18;
+  gpio.open(p, "output", function(err) {
+    gpio.write(p, 1, function() {
       console.log("writing to " + p);
-      setTimeout(gpio.close(p), time);
+      setTimeout(function() { cleanup(p) }, 10000);
     });
-  });  
-}
+  });
 
-startMotor(16, 5000);
+function cleanup(q) {
+  gpio.close(q);
+}
