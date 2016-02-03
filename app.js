@@ -85,10 +85,10 @@ function openSocket(reconnectAttempts){
 
     // TODO! Amount will be in satoshis
     // normalize somehow
-    if (data.amount == 'undefined')
-      var amount = 5000;
-    else
+    if ("amount" in data)
       var amount = parseInt(data.amount);
+    else 
+      var amount = 5000;
     
     // not on the pi
     if ('test' == app.get('env')) return;
