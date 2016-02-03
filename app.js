@@ -44,9 +44,12 @@ function startMotor (p, time) {
   gpio.open(p, "output", function(err) {   
     gpio.write(p, 1, function() {          
       console.log("writing to " + p);
-      setTimeout(function() { gpio.close(p); }, time);
+      setTimeout(function() { stopMotor(p); }, time);
     });
   });  
+}
+function stopMotor(p) {
+  gpio.close(p);
 }
 
 var http = require('http').Server(app);
