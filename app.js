@@ -41,25 +41,17 @@ function dispense (qty) {
 
 function startMotor (p, time) {
   gpio.open(p, "output", function(err) {   
-    gpio.write(p, 0, function() {          
-      console.log("received something");
-      setTimeout(gpio.close(p), time);
+    gpio.write(p, 1, function() {          
+      console.log("writing to " + p);
+      setTimeout(gpio.write(p,0), time);
     });
   });  
 }
 
-// start high
-gpio.open(16, "output", function(err) {   
-    gpio.write(16, 1, function() {
-      gpio.close(16);
-    });
-  }); 
-gpio.open(18, "output", function(err) {   
-    gpio.write(18, 1, function() {
-      gpio.close(18);
-    });
-  }); 
-
+function cleanup () {
+  gpio.close(16);
+  gpio.close(18);
+}
 
 var http = require('http').Server(app);
 
@@ -86,6 +78,7 @@ function openSocket(reconnectAttempts){
     clearTimeout(timeout);
     console.log('Connected');
     connection.send('Hello from client');
+    dispense(Math.floor(5000));
   });
 
   connection.on('message', function(data, flags) {
@@ -112,6 +105,7 @@ function openSocket(reconnectAttempts){
 
   connection.on('close', function () {
     console.log('closed, reconnecting');
+    cleanup();
     setTimeout (openSocket(0), PING_TIME);
   });
 }
