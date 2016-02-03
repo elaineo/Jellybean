@@ -101,7 +101,7 @@ app.post('/beans', function(req, res){
     "sender": "Nick",
     "amount": parseInt(amount)
   }
-  wsServer.broadcast(msg);
+  wsServer.broadcast(JSON.stringify(msg));
   res.sendStatus(200);
 });
 
