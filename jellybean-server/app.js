@@ -58,7 +58,7 @@ wsServer.on('connection', function connection(ws) {
   ws.on('message', function incoming(message) {
     console.log('received: %s', message);
   });
-  setTimeout(wsServer.keepAlive, PING_TIME);
+  // setTimeout(wsServer.keepAlive, PING_TIME);
 
   ws.send('Greetings, client!');
 });
@@ -113,7 +113,7 @@ wsServer.broadcast = function broadcast(data) {
 
 wsServer.keepAlive = function keepalive() {
   wsServer.clients.forEach(function each(client) {
-    try { client.ping(); } catch (e) { console.log(client); }
+    try { client.ping(); } catch (e) { console.log("failed ping"); }
   });
   setTimeout(wsServer.keepAlive, PING_TIME);
 };
