@@ -41,13 +41,25 @@ function dispense (qty) {
 
 function startMotor (p, time) {
   gpio.open(p, "output", function(err) {   
-    gpio.write(p, 1, function() {          
+    gpio.write(p, 0, function() {          
       console.log("received something");
       setTimeout(gpio.close(p), time);
     });
   });  
 }
-startMotor(16,5000);
+
+// start high
+gpio.open(16, "output", function(err) {   
+    gpio.write(16, 1, function() {
+      gpio.close(16);
+    });
+  }); 
+gpio.open(18, "output", function(err) {   
+    gpio.write(18, 1, function() {
+      gpio.close(18);
+    });
+  }); 
+
 
 var http = require('http').Server(app);
 
