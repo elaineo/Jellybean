@@ -43,14 +43,9 @@ function startMotor (p, time) {
   gpio.open(p, "output", function(err) {   
     gpio.write(p, 1, function() {          
       console.log("writing to " + p);
-      setTimeout(gpio.write(p,0), time);
+      setTimeout(gpio.close(p), time);
     });
   });  
-}
-
-function cleanup () {
-  gpio.close(16);
-  gpio.close(18);
 }
 
 var http = require('http').Server(app);
@@ -91,7 +86,7 @@ function openSocket(reconnectAttempts){
     // not on the pi
     if ('test' == app.get('env')) return;
 
-    dispense(Math.floor(amount/10));
+    dispense(amount));
   });
 
   connection.on('ping', function () {
@@ -105,7 +100,6 @@ function openSocket(reconnectAttempts){
 
   connection.on('close', function () {
     console.log('closed, reconnecting');
-    cleanup();
     setTimeout (openSocket(0), PING_TIME);
   });
 }
