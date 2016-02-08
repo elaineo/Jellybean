@@ -6,8 +6,10 @@ contract beans {
     uint256 public mostRecentPaid;
     uint256 public turnMicroseconds;
     uint256 public lastTurnMicroseconds;
+    address public owner;
 
     function beans() {
+        owner = msg.sender;
         mostRecentPaid = 0;
         turnMicroseconds = 0;
         lastTurnMicroseconds = 0;
@@ -37,4 +39,12 @@ contract beans {
         return lastTurnMicroseconds;
     }
 
+    function kill() 
+    { 
+        if (msg.sender == owner)
+            suicide(owner);  // kills this contract and sends remaining funds back to creator
+    }
+
 }
+
+// contract beans { uint256 public mostRecentPaid; uint256 public turnMicroseconds; uint256 public lastTurnMicroseconds; function beans() { mostRecentPaid = 0; turnMicroseconds = 0; lastTurnMicroseconds = 0; } function payForBeans() returns (uint d) { mostRecentPaid = msg.value; turnMicroseconds += mostRecentPaid / 1000; } function getMostRecentPaid() returns (uint d) { return mostRecentPaid; } function consumeTurnMicroseconds() returns (uint d) { lastTurnMicroseconds = turnMicroseconds; turnMicroseconds = 0; return lastTurnMicroseconds; } function getTurnMicroseconds() returns (uint d) { return lastTurnMicroseconds; } }
