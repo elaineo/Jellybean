@@ -1,8 +1,10 @@
 /*
-    Vending machine physical controller */ var express = 
-require('express'); var path = require('path'); var logger = 
-require('morgan'); var bodyParser = require('body-parser'); var app = 
-express();
+    Vending machine physical controller */ 
+var express = require('express'); 
+var path = require('path'); 
+var logger = require('morgan'); 
+var bodyParser = require('body-parser'); 
+var app = express();
 
 var WebSocket = require('ws');
 
@@ -77,7 +79,6 @@ function openSocket(reconnectAttempts){
     clearTimeout(timeout);
     console.log('Connected');
     connection.send('Hello from client');
-    //dispense(Math.floor(3000));
   });
 
   connection.on('message', function(data, flags) {
@@ -91,13 +92,13 @@ function openSocket(reconnectAttempts){
       var amount = parseInt(obj.amount);
     }
     catch (e) {
-      var amount = 5000;  
+      var amount = 10000;  
     }
           
     // not on the pi
     if ('test' == app.get('env')) return;
 
-    dispense(amount);
+    dispense(amount/10);
   });
 
   connection.on('ping', function () {
