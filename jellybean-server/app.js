@@ -9,6 +9,8 @@ var bodyParser = require('body-parser');
 var logger = require('morgan');
 var util = require('util');
 var http = require('http');
+var favicon = require('serve-favicon');
+
 
 var app = express();
 
@@ -16,6 +18,7 @@ app.set('port', process.env.PORT || 8080);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
+app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
