@@ -227,7 +227,7 @@
         var address = $("#bean-address").val();
           qty = price * 100000000;
           var price = $("#bean-price").val();
-          var btcURL = "bitcoin:" + address + "?amount=" + qty + "&label=Jellybean";
+          var btcURL = "bitcoin:" + address + "?amount=" + price + "&label=Jellybean";
           var btcHTML = '<p><a href="' + btcURL + '">Please send '+ price + ' to ' +address +'<\/a><br>Your beans will be dispensed as soon as payment is confirmed.<\/p><center><img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' + btcURL + '"></center>';
           $('#qrcode').html(btcHTML);
     }
