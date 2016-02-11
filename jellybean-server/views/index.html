@@ -79,7 +79,7 @@
 					
 					<li class="menuItem"><a href="#whatis">What is this?</a></li>
 					<li class="menuItem"><a href="#buybeans">Buy Beans</a></li>
-					<li class="menuItem"><a href="#contact">Contact</a></li>
+					<li class="menuItem"><a href="#contact">Delivery</a></li>
 				</ul>
 			</div>
 		   
@@ -92,16 +92,27 @@
 
 			<div class="col-md-6 col-md-offset-3 text-center wrap_title">
 				<h2>What is this?</h2>
-				<p class="lead"><span style="color:#381c66"><b>beans for bits</b></span> is a proplet, or an ownership-aware device that controls assets with digital protocols.</p>
+				<p class="lead"><span style="color:#381c66"><b>beans for bits</b></span> is a <a href="http://szabo.best.vwh.net/proplets.html">proplet</a>, or an ownership-aware device that controls real-world assets with digital protocols.</p>
 				
 			</div>
-			
+            <div class="row">
+                <div class="col-md-10 col-md-offset-2">
+                <img src="img/vending.jpg" style="width:inherit">
+                </div>
+            </div>
 			<div class="row">
 				<div class="col-sm-12 wow fadeInDown ">
-				<p class="lead">The Jellybean proplet is controlled by an Ethereum client. The control protocol is publicly-viewable on the blockchain, allowing customers to verify the code.</p>
-
+				<p class="lead">The jellybean proplet is controlled by an Ethereum client. The control protocol is dynamic, so the vending machine can adjust to market demand. The contract governing the proplet is publicly-viewable on the blockchain, allowing customers to verify the code.</p>
 				</div>
 			</div>
+            <div class="row">
+                <div class="col-sm-12 wow fadeInDown ">
+                <h3>How do I get my beans?</h3>
+                <p class="lead">Jellybeans are dispensed from the vending machine at <a href="https://www.goabra.com/">Abra's office</a> in Mountain View, California. <br>Non-employees are welcome to purchase beans to feed our engineers, like at the zoo.</p>
+                <h4><a style="color:#381c66" href="http://www.elaineou.com">More info about Jellybean Proplets...</a></h4>
+                <center><img  class="rotate" src="img/jellybean.png" style="max-width:100px"></center>
+                </div>
+            </div>
 
 		
 		</div>
@@ -118,20 +129,23 @@
 			 <div class="row">
 			 <div class="bean-form">
 				 <form>
+                    <input type="hidden" id="bean-address">
 					
-					<input id="bean-count" type="number" onchange="updatePrice()" min="1" placeholder="number of beans"/> x 10,000 Satoshis per bean = 
+					<input id="bean-count" type="number" onchange="updatePrice()" min="1" placeholder="number of beans" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/> x 10,000 Satoshis per bean = 
 					<input id="bean-price" type="text" disabled/>
 				</form>
 			</div>
-			<div class="mockup-content">
+			<div id="qr-mock" class="mockup-content">
 					<div class="morph-button wow pulse morph-button-inflow morph-button-inflow-1">
-						<button type="button "><span>Pay with Bitcoin</span></button>
+						<button type="button " id="bean-button"><span>Pay with Bitcoin</span></button>
 						<div class="morph-content">
 							<div>
 								<div class="content-style-form content-style-form-4 ">
 									<h2 class="morph-clone">Pay with Bitcoin</h2>
 									<form>
-									<div id="qrcode"></div>
+									<div id="qrcode">Please enter a valid quantity.
+<img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='bitcoin:1ELaiNeQk4rpAL2dUYJ9MSm4dzwo7xG4E5?amount=10000">
+                                    </div>
 									</form>
 								</div>
 							</div>
@@ -149,7 +163,7 @@
 			
 			<div class="col-md-6 col-md-offset-3 text-center wrap_title">
 				<h2>Delivery</h2>
-				<p class="lead" >...is not yet available. If you are not present to accept your purchase, your beans will be delivered to the kitchen floor.</p>
+				<p class="lead" >...is not yet available. If you are not at the Mountain View office to accept your purchase, your beans will be delivered to the kitchen floor.</p>
 				<img  class="rotate" src="img/jellybean.png" style="max-width:100px">
 			</div>
 			
@@ -199,14 +213,22 @@
         url: '/address',
         success: function(response) {
           console.log(response);
-          var btcURL = "bitcoin:" + response.address + "?amount=" + 10000 + "&label=Jellybean";
-          var btcHTML = '<img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' + btcURL + '"><p><a href="' + btcURL + '">Now send '+ 10000 +' bits to ' +response.address +'.<\/a><\/p>';
-          $('#qrcode').html(btcHTML);
+          $("#bean-address").val(response.address);
         }
     });
   });
     function updatePrice() {
-        
+        var qty = $("#bean-count").val();
+        if (qty!="") $("#bean-button").prop("disabled", false);
+        var price = qty / 10000;
+        $("#bean-price").val(price + " BTC");
+
+        var address = $("#bean-address").val();
+          qty *= 10000;
+          var price = $("#bean-price").val();
+          var btcURL = "bitcoin:" + address + "?amount=" + qty + "&label=Jellybean";
+          var btcHTML = '<p><a href="' + btcURL + '">Please send '+ price + ' to ' +address +'<\/a><br>Your beans will be dispensed as soon as payment is confirmed.<\/p><center><img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' + btcURL + '"></center>';
+          $('#qrcode').html(btcHTML);
     }
   </script>
 	<script src="js/classie.js"></script>
