@@ -1,230 +1,196 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if IE 9]>    <html class="no-js ie9" lang="en"> <![endif]-->
+<!--[if gt IE 9]><!--> <html> <!--<![endif]-->
 <head>
-  <meta charset="utf-8">
-  <meta content="IE=edge" http-equiv="X-UA-Compatible">
-  <meta content="width=device-width, initial-scale=1" name="viewport">
-  <meta content="" name="description">
-  <meta content="" name="author">
-  <title>Jellybean Proplet</title>
-  <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
-  <link href="css/bootstrap.min.css" rel="stylesheet"><!-- Custom CSS -->
-  <link href="css/freelancer.css" rel="stylesheet"><!-- Custom Fonts -->
-  <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type=
-  "text/css">
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel=
-  "stylesheet" type="text/css">
-  <link href=
-  "https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic"
-  rel="stylesheet" type="text/css">
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="Abra Jellybean Vending Machine">
+    <meta name="author" content="Elaine Ou">
+
+    <title>Jellybean Proplet</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+ 
+    <!-- Custom Google Web Font -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
+	
+    <!-- Custom CSS-->
+    <link href="css/general.css" rel="stylesheet">
+	
+	 <!-- Owl-Carousel -->
+    <link href="css/custom.css" rel="stylesheet">
+	<link href="css/owl.carousel.css" rel="stylesheet">
+    <link href="css/owl.theme.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+	<link href="css/animate.css" rel="stylesheet">
+	
+	<!-- Magnific Popup core CSS file -->
+	<link rel="stylesheet" href="css/magnific-popup.css"> 
+	
+	<script src="js/modernizr-2.6.2.min.js"></script>  <!-- Modernizr /-->
 </head>
-<body class="index" id="page-top">
-  <!-- Navigation -->
-  <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header page-scroll">
-        <button class="navbar-toggle" data-target=
-        "#bs-example-navbar-collapse-1" data-toggle="collapse" type=
-        "button"><span class="sr-only">Toggle navigation</span> <span class=
-        "icon-bar"></span> <span class="icon-bar"></span> <span class=
-        "icon-bar"></span></button> <a class="navbar-brand" href=
-        "#page-top">Jellybean Proplet</a>
-      </div>
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav navbar-right">
-          <li class="hidden">
-            <a href="#page-top"></a>
-          </li>
-          <li class="page-scroll">
-            <a href="#about">About</a>
-          </li>
-          <li class="page-scroll">
-            <a href="#contact">Contact</a>
-          </li>
-        </ul>
-      </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-  </nav><!-- Header -->
-  <header>
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <img alt="" class="img-responsive" src="img/jellybean.png">
-          <div class="intro-text">
-            <span class="name">Trustless Jellybeans</span>
-          </div>
-        </div>
-      </div>
+
+<body id="home">
+
+	<!-- Preloader -->
+	<div id="preloader">
+		<div id="status"></div>
+	</div>
+	
+	<!-- FullScreen -->
+    <div class="intro-header">
+		<div class="col-xs-12 text-center abcen1">
+			<h1 class="h1_home wow fadeIn" data-wow-delay="0.4s">beans for bits</h1>
+			<h3 class="h3_home wow fadeIn" data-wow-delay="0.6s">Trust-Minimized Jellybean Management</h3>
+			<ul class="list-inline intro-social-buttons">
+				<li><a href="#buybeans" class="btn  btn-lg mybutton_standard wow swing wow fadeIn" data-wow-delay="1.2s"><span class="network-name">Buy Some Beans</span></a>
+				</li>
+			</ul>
+		</div>    
+        <!-- /.container -->
+		<div class="col-xs-12 text-center abcen wow fadeIn">
+			<div class="button_down "> 
+				<a class="imgcircle wow bounceInUp" data-wow-duration="1.5s"  href="#whatis"> <img class="img_scroll" src="img/icon/circle.png" alt=""> </a>
+			</div>
+		</div>
     </div>
-  </header><!-- Portfolio Grid Section -->
-  <section id="portfolio">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12 text-center">
-          <h2>Buy Some Beans</h2>
-          <hr class="star-primary">
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-4 text-center portfolio-item">
-          <a class="portfolio-link" data-toggle="modal" href="#paymentModal">
-          <div class="caption">
-            <div class="caption-content">
-              <i class="fa fa-search-plus fa-3x"></i>
-            </div>
-          </div><img alt="" class="img-responsive" src="img/bill.png"></a>
-        </div>
-      </div>
-    </div>
-  </section><!-- About Section -->
-  <section class="success" id="about">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12 text-center">
-          <h2>About</h2>
-          <hr class="star-light">
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-4 col-lg-offset-2">
-          <p>Trust-minimized vending machines.</p>
-        </div>
-      </div>
-    </div>
-  </section><!-- Contact Section -->
-  <section id="contact">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12 text-center">
-          <h2>Contact Me</h2>
-          <hr class="star-primary">
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-8 col-lg-offset-2">
-          <!-- To configure the contact form email address, go to mail/contact_me.php and update the email address in the PHP file on line 19. -->
-          <!-- The form should work on most web servers, but if the form is not working you may need to configure your web server differently. -->
-          <form id="contactForm" name="sentMessage" novalidate="">
-            <div class="row control-group">
-              <div class=
-              "form-group col-xs-12 floating-label-form-group controls">
-                <label>Name</label> <input class="form-control"
-                data-validation-required-message="Please enter your name." id=
-                "name" placeholder="Name" required="" type="text">
-                <p class="help-block text-danger"></p>
-              </div>
-            </div>
-            <div class="row control-group">
-              <div class=
-              "form-group col-xs-12 floating-label-form-group controls">
-                <label>Email Address</label> <input class="form-control"
-                data-validation-required-message=
-                "Please enter your email address." id="email" placeholder=
-                "Email Address" required="" type="email">
-                <p class="help-block text-danger"></p>
-              </div>
-            </div>
-            <div class="row control-group">
-              <div class=
-              "form-group col-xs-12 floating-label-form-group controls">
-                <label>Phone Number</label> <input class="form-control"
-                data-validation-required-message=
-                "Please enter your phone number." id="phone" placeholder=
-                "Phone Number" required="" type="tel">
-                <p class="help-block text-danger"></p>
-              </div>
-            </div>
-            <div class="row control-group">
-              <div class=
-              "form-group col-xs-12 floating-label-form-group controls">
-                <label>Message</label> 
-                <textarea class="form-control"
-                data-validation-required-message="Please enter a message." id=
-                "message" placeholder="Message" required="" rows="5">
-</textarea>
-                <p class="help-block text-danger"></p>
-              </div>
-            </div><br>
-            <div id="success"></div>
-            <div class="row">
-              <div class="form-group col-xs-12">
-                <button class="btn btn-success btn-lg" type=
-                "submit">Send</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </section><!-- Footer -->
-  <footer class="text-center">
-    <div class="footer-below">
+	
+	<!-- NavBar-->
+	<nav class="navbar-default" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#home">beans for bits</a>
+			</div>
+
+			<div class="collapse navbar-collapse navbar-right navbar-ex1-collapse">
+				<ul class="nav navbar-nav">
+					
+					<li class="menuItem"><a href="#whatis">What is this?</a></li>
+					<li class="menuItem"><a href="#buybeans">Buy Beans</a></li>
+					<li class="menuItem"><a href="#contact">Contact</a></li>
+				</ul>
+			</div>
+		   
+		</div>
+	</nav> 
+	
+	<!-- What is -->
+	<div id="whatis" class="content-section-b" style="border-top: 0">
+		<div class="container">
+
+			<div class="col-md-6 col-md-offset-3 text-center wrap_title">
+				<h2>What is this?</h2>
+				<p class="lead"><span style="color:#381c66"><b>beans for bits</b></span> is a proplet, or an ownership-aware device that controls assets with digital protocols.</p>
+				
+			</div>
+			
+			<div class="row">
+				<div class="col-sm-12 wow fadeInDown ">
+				<p class="lead">The Jellybean proplet is controlled by an Ethereum client. The control protocol is publicly-viewable on the blockchain, allowing customers to verify the code.</p>
+
+				</div>
+			</div>
+
+		
+		</div>
+	</div>
+	
+	
+	<div id="buybeans" class="content-section-c ">
+		<div class="container">
+			<div class="row">
+			<div class="col-md-8 col-md-offset-2 text-center white">
+				<h2>Buy some Beans</h2>
+			 </div>
+			 </div>
+			 <div class="row">
+			 <div class="bean-form">
+				 <form>
+					
+					<input id="bean-count" type="number" onchange="updatePrice()" min="1" placeholder="number of beans"/> x 10,000 Satoshis per bean = 
+					<input id="bean-price" type="text" disabled/>
+				</form>
+			</div>
+			<div class="mockup-content">
+					<div class="morph-button wow pulse morph-button-inflow morph-button-inflow-1">
+						<button type="button "><span>Pay with Bitcoin</span></button>
+						<div class="morph-content">
+							<div>
+								<div class="content-style-form content-style-form-4 ">
+									<h2 class="morph-clone">Pay with Bitcoin</h2>
+									<form>
+									<div id="qrcode"></div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>	
+		</div>
+	</div>	
+	
+	<!-- Contact -->
+	<div id="contact" class="content-section-a">
+		<div class="container">
+			<div class="row">
+			
+			<div class="col-md-6 col-md-offset-3 text-center wrap_title">
+				<h2>Delivery</h2>
+				<p class="lead" >...is not yet available. If you are not present to accept your purchase, your beans will be delivered to the kitchen floor.</p>
+				<img  class="rotate" src="img/jellybean.png" style="max-width:100px">
+			</div>
+			
+			</div>
+		</div>
+	</div>
+	
+	
+	
+    <footer>
       <div class="container">
         <div class="row">
-          <div class="col-lg-12">
-            Copyright &copy; Jellybean Proplet 2016
-          </div>
+          <div class="col-md-12 text-center">
+            beans for bits is definitely not endorsed by <a href="http://goabra.com" target="_blank"><img src="img/abra.png"></a>
+			<br>
+          </div> <!-- /col-xs-7 -->
         </div>
       </div>
-    </div>
-  </footer>
-  <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
-  <div class="scroll-top page-scroll hidden-sm hidden-xs hidden-lg hidden-md">
-    <a class="btn btn-primary" href="#page-top"><i class=
-    "fa fa-chevron-up"></i></a>
-  </div><!-- Portfolio Modals -->
-  <div aria-hidden="true" class="portfolio-modal modal fade" id="paymentModal"
-  role="dialog" tabindex="-1">
-    <div class="modal-content">
-      <div class="close-modal" data-dismiss="modal">
-        <div class="lr">
-          <div class="rl"></div>
-        </div>
-      </div>
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-4 col-sm-offset-2">
-            <div class="modal-body">
-              <h3>Pay with Bitcoin</h3>
-              <div id="qrcode"></div><button class="btn btn-default"
-              data-dismiss="modal" type="button"><i class="fa fa-times"></i>
-              Done</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div><!-- jQuery -->
-  <script src="js/jquery.js">
-  </script> <!-- Bootstrap Core JavaScript -->
-   
-  <script src="js/bootstrap.min.js">
-  </script> <!-- Plugin JavaScript -->
-   
-  <script src=
-  "http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js">
-  </script> 
-  <script src="js/classie.js">
-  </script> 
-  <script src="js/cbpAnimatedHeader.js">
-  </script> <!-- Contact Form JavaScript -->
-   
-  <script src="js/jqBootstrapValidation.js">
-  </script> 
-  <script src="js/contact_me.js">
-  </script> <!-- Custom Theme JavaScript -->
-   
-  <script src="js/freelancer.js">
-  </script> 
-  <script>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/jquery-1.10.2.js"></script>
+    <script src="js/bootstrap.js"></script>
+	<script src="js/owl.carousel.js"></script>
+	<script src="js/script.js"></script>
+	<!-- StikyMenu -->
+	<script src="js/stickUp.min.js"></script>
+	<script type="text/javascript">
+	  jQuery(function($) {
+		$(document).ready( function() {
+		  $('.navbar-default').stickUp();
+		  
+		});
+	  });
+	
+	</script>
+	<!-- Smoothscroll -->
+	<script type="text/javascript" src="js/jquery.corner.js"></script> 
+	<script src="js/wow.min.js"></script>
+	
+	  <script>
     $(document).ready(function() {
     $.ajax({
         type: "GET",
@@ -239,6 +205,14 @@
         }
     });
   });
+    function updatePrice() {
+        
+    }
   </script>
+	<script src="js/classie.js"></script>
+	<script src="js/uiMorphingButton_inflow.js"></script>
+	<!-- Magnific Popup core JS file -->
+	<script src="js/jquery.magnific-popup.js"></script> 
 </body>
+
 </html>
