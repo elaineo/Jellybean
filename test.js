@@ -1,9 +1,9 @@
 /*
-    GPIO test */ var gpio = require("pi-gpio");
+    GPIO test */ 
 
-var p = 18; gpio.close(p);
+var gpio = require("pi-gpio");
 
-function startUp() {
+function startUp(p) {
   gpio.open(p, "output", function(err) {
     gpio.write(p, 1, function() {
       console.log("writing to " + p);
