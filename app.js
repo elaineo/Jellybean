@@ -98,7 +98,8 @@ function openSocket(reconnectAttempts){
     // not on the pi
     if ('test' == app.get('env')) return;
 
-    dispense(amount/10);
+    amount = Math.floor(amount/10);
+    dispense(amount);
   });
 
   connection.on('ping', function () {
