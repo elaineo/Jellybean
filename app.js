@@ -7,8 +7,11 @@ var bodyParser = require('body-parser');
 var app = express();
 
 var WebSocket = require('ws');
+var t_ = require('./jTime.js');
 
-var PING_TIME = 20000; var DELAY_TIME = 1.5; var MAX_RETRIES = 10;
+var PING_TIME = 20000; 
+var DELAY_TIME = 1.5; 
+var MAX_RETRIES = 10;
 
 // pi only 
 if ('test' == app.get('env')) {
@@ -20,7 +23,8 @@ else {
   var wsurl = 'ws://54.174.77.180';
 }
 
-var connection; openSocket(0);
+var connection; 
+openSocket(0);
 
 app.set('port', process.env.PORT || 4000);
 
@@ -40,8 +44,6 @@ function cleanup() {
   gpio.close(18);
 }
 
-//cleanup();
-
 function startMotor (p, time) {
   gpio.open(p, "output", function(err) {   
     gpio.write(p, 1, function() {          
@@ -60,6 +62,13 @@ http.listen(app.get('port'), '0.0.0.0', function() {
     console.log('Express server listening on port ' + app.get('port'));
 });
 
+function isConnected() {
+  if (connection.readyState != 1) 
+    openSocket(0);
+}
+
+t_.setTimeout(5000, isConnected)
+
 function openSocket(reconnectAttempts){
   if (reconnectAttempts > MAX_RETRIES) {
     console.log('Max retries reached');
@@ -76,6 +85,7 @@ function openSocket(reconnectAttempts){
                 }, PING_TIME*10);
 
   connection.on('open', function() {
+
     clearTimeout(timeout);
     console.log('Connected');
     connection.send('Hello from client');
