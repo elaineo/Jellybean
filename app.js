@@ -67,7 +67,7 @@ function isConnected() {
     openSocket(0);
 }
 
-t_.setTimeout(5000, isConnected)
+t_.setInterval(600000, isConnected)
 
 function openSocket(reconnectAttempts){
   if (reconnectAttempts > MAX_RETRIES) {
