@@ -35,6 +35,8 @@ else {
   var ADDRESS_PATH = '/v1/btc/main/payments?token=76a0fb3fe8f4a9a6df085958be202a9d';
 }
 
+var BCY = 'BwDf4eFgouWN22SxakwuPB5jLMSKBQZCvR';
+
 var server = http.createServer(app);
 
 server.listen(app.get('port'), function() { 
@@ -94,6 +96,32 @@ app.post('/beans', function(req, res){
   var msg = {
     "message": "received some beans",
     "sender": "Nick",
+    "amount": parseInt(amount)
+  }
+  wsServer.broadcast(JSON.stringify(msg));
+  res.sendStatus(200);
+});
+
+app.post('/bcy', function(req, res){
+  console.log(req.body);
+
+  var outputs = req.body.outputs;
+
+  for (var o=0; o<outputs.length; o++) {
+    if (outputs[o].addresses.indexOf(BCY) > -1)
+      var amount = outputs[0].value;    
+  }
+  
+  if (amount == "undefined") {
+    console.log("invalid transaction;")
+    res.sendStatus(400);
+    return;
+  }
+
+  // parse body
+  var msg = {
+    "message": "received some beans",
+    "sender": "Abra",
     "amount": parseInt(amount)
   }
   wsServer.broadcast(JSON.stringify(msg));
