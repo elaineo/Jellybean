@@ -63,8 +63,12 @@ http.listen(app.get('port'), '0.0.0.0', function() {
 });
 
 function isConnected() {
-  if (connection.readyState != 1) 
+  //connection.send('ping!');
+  if (connection.readyState != 1) {
+    console.log('Disconnected. Reconnecting...');
+    console.log(connection.readyState);
     openSocket(0);
+  }
 }
 
 t_.setInterval(600000, isConnected)
