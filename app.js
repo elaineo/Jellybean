@@ -63,10 +63,9 @@ http.listen(app.get('port'), '0.0.0.0', function() {
 });
 
 function isConnected() {
-  //connection.send('ping!');
+  connection.send('ping!');
   if (connection.readyState != 1) {
     console.log('Disconnected. Reconnecting...');
-    console.log(connection.readyState);
     openSocket(0);
   }
 }
