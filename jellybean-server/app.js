@@ -122,7 +122,7 @@ app.post('/bcy', function(req, res){
   var msg = {
     "message": "received some beans",
     "sender": "Abra",
-    "amount": parseInt(amount)
+    "amount": Math.floor(parseInt(amount)/10)
   }
   wsServer.broadcast(JSON.stringify(msg));
   res.sendStatus(200);
