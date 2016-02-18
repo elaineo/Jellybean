@@ -209,12 +209,13 @@ function abraCustomer(phone, amount, response) {
                   "content-type": "application/json",
               }
             }
+            var req_id = customer + Math.floor((Math.random() * 100) + 1).toString();
             var payment_data = {
               "customer_id": customer, 
               "amount": { "currency": "USD", "value": amount },
               "description": "jellybeans",
               "expiration": 60,
-              "request_id": "1237"
+              "request_id": req_id
             }
             var payreq = https.request(payment_options, function(payres) {
               payres.setEncoding('utf8');
