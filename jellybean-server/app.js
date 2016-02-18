@@ -9,6 +9,8 @@ var bodyParser = require('body-parser');
 var logger = require('morgan');
 var util = require('util');
 var http = require('http');
+var https = require('https');
+var querystring = require('querystring');
 var favicon = require('serve-favicon');
 
 
@@ -128,6 +130,13 @@ app.post('/bcy', function(req, res){
   res.sendStatus(200);
 });
 
+
+app.post('/abra', function(req, res){
+  console.log(req.body);
+  var amount = parseInt(req.body.qty) * 1000
+  abraCustomer(req.body.phone, amount, res);
+});
+
 wsServer.broadcast = function broadcast(data) {
   wsServer.clients.forEach(function each(client) {
     client.send(data);
@@ -166,4 +175,70 @@ function generateAddress(response) {
   }
   post_req.write(JSON.stringify(query));
   post_req.end();
+}
+
+function abraCustomer(phone, amount, response) {
+
+  var post_options = {
+      host: 'merchant-bcy.abra.xyz',
+      path: '/v1/customer?phone=' + encodeURIComponent(phone),
+      method: 'GET',
+      auth: 'VFL4HXB:12345'
+  };
+
+  // Set up the request
+  var req = https.request(post_options, function(res) {
+      console.log(res.statusCode);
+      res.setEncoding('utf8');
+      res.on('data', function (d) {
+          var data = JSON.parse(d);
+          if ("error" in data) {
+            console.log(data.error.message);
+            response.write(JSON.stringify(data.error));
+            response.end();
+            return;
+          } else {
+            var customer = data.customer.id;
+            var payment_options = {
+              host: 'merchant-bcy.abra.xyz',
+              path: '/v1/payment',
+              method: 'POST',
+              auth: 'VFL4HXB:12345',
+              json: true,
+              headers: {
+                  "content-type": "application/json",
+              }
+            }
+            var payment_data = {
+              "customer_id": customer, 
+              "amount": { "currency": "USD", "value": amount },
+              "description": "jellybeans",
+              "expiration": 60,
+              "request_id": "1237"
+            }
+            var payreq = https.request(payment_options, function(payres) {
+              payres.setEncoding('utf8');
+              payres.on('data', function (d) {
+                var data = JSON.parse(d);
+                console.log(data);
+                if ("error" in data) {
+                  response.write(JSON.stringify(data.error));
+                  response.end();
+                  return;
+                } else {
+                  response.write(JSON.stringify({'message': 'Payment request sent to your app'}));
+                  response.end();
+                }
+              });
+            });
+            console.log(JSON.stringify(payment_data))
+            payreq.write(JSON.stringify(payment_data));
+
+            payreq.end();
+          }
+
+      });
+  });
+  req.end();
+
 }
