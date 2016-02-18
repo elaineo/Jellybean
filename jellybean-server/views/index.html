@@ -51,6 +51,8 @@
 			<ul class="list-inline intro-social-buttons">
 				<li><a href="#buybeans" class="btn  btn-lg mybutton_standard wow swing wow fadeIn" data-wow-delay="1.2s"><span class="network-name">Buy Some Beans</span></a>
 				</li>
+                <li><a href="#buyabra" class="btn  btn-lg mybutton_cyano wow swing wow fadeIn" data-wow-delay="1.2s"><span class="network-name">Pay With Abra</span></a>
+                </li>
 			</ul>
 		</div>    
         <!-- /.container -->
@@ -171,7 +173,46 @@
 			</div>
 		</div>
 	</div>
-	
+	    <!-- Abra -->
+    <div id="buyabra" class="content-section-b">
+        <div class="container">
+            <div class="row">
+            
+            <div class="col-md-6 col-md-offset-3 text-center wrap_title">
+                <h2>Pay With Abra</h2>
+                <p class="lead" >This is some stuff for testing our payment API. If you don't work for Abra, please go away.</p>
+            </div>            
+            </div>
+              <form role="form" action="">
+                 <div class="row">
+                    <div class="form-group col-md-3 col-md-offset-3">
+                    <label for="phoneAbra">Phone Number</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="phoneAbra" id="phoneAbra" placeholder="+16502215800" required="">
+                    </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                    <label for="beansAbra">Beans</label>
+                    <div class="input-group">
+                      <select class="form-control" id="beansAbra">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-3 col-md-offset-3">
+                    <input type="submit" name="submit" id="submitAbra" value="Submit" class="btn wow tada btn-embossed btn-primary pull-right animated animated" style="visibility: visible;">
+                  </div>
+                </div>
+              </form>
+            </div>
+        </div>
+    </div>
 	
 	
     <footer>
@@ -231,6 +272,24 @@
           var btcHTML = '<p><a href="' + btcURL + '">Please send '+ price + ' to ' +address +'<\/a><br>Your beans will be dispensed as soon as payment is confirmed.<\/p><center><img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' + btcURL + '"></center>';
           $('#qrcode').html(btcHTML);
     }
+
+    $("#submitAbra").click(function(e) {
+        e.preventDefault();
+        var phone = $("#phoneAbra").val();
+        var qty = $("#beansAbra").val();
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({'phone': phone, 'qty': qty}),
+            url: '/abra',
+            success: function(response) {
+              console.log(response);
+              alert(response.message);
+              $("#phoneAbra").val('');
+            }
+        });
+    })
   </script>
 	<script src="js/classie.js"></script>
 	<script src="js/uiMorphingButton_inflow.js"></script>

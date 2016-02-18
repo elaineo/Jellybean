@@ -141,9 +141,9 @@ filter: alpha(opacity=95) !important;
 }
 
 .mybutton_cyano{
-	border: 1px solid #4A90BE;
-	color: #fff;
-	background-color:#4A90BE;
+	border: 1px solid #fff;
+	color: #381c66;
+	background-color:#fff;
 }
 
 .mybutton_cyano:hover{
