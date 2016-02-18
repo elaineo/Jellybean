@@ -212,7 +212,7 @@ function abraCustomer(phone, amount, response) {
             var req_id = customer + Math.floor((Math.random() * 100) + 1).toString();
             var payment_data = {
               "customer_id": customer, 
-              "amount": { "currency": "USD", "value": amount },
+              "amount": { "currency": "php", "value": amount },
               "description": "jellybeans",
               "expiration": 60,
               "request_id": req_id
