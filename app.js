@@ -24,7 +24,7 @@ if ('test' == app.get('env')) {
 }
 else {
   var gpio = require("pi-gpio");
-  var wsurl = 'ws://54.174.77.180';
+  var wsurl = 'ws://52.87.181.108';
 }
 
 var connection; 
