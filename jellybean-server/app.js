@@ -151,10 +151,13 @@ app.post('/bcy', function(req, res){
 
 
 app.post('/abra', function(req, res){
-  console.log(req.body);
   var beanQty = parseInt(req.body.beanQty) 
   var mmQty = parseInt(req.body.mmQty) 
   abraCustomer(req.body.phone, beanQty, mmQty, res);
+});
+app.post('/abra_request', function(req, res){
+  var docId = req.body.doc_id; 
+  abraRequest(docId, res);
 });
 
 wsServer.broadcast = function broadcast(data) {
@@ -197,6 +200,51 @@ function generateAddress(response) {
   post_req.end();
 }
 
+function abraRequest(docId, response) {
+
+  Beans.findById( docId, function(err, r) {
+
+    var payment_options = {
+      host: 'merchant-bcy.abra.xyz',
+      path: '/v1/payment',
+      method: 'POST',
+      auth: 'VFL4HXB:12345',
+      json: true,
+      headers: {
+          "content-type": "application/json",
+      }
+    }
+    var payment_data = {
+      "customer_id": r.user_id, 
+      "amount": { "currency": "php", "value": r.value },
+      "description": r.mm_count.toString() + " m&ms and " + r.bean_count.toString() + " jellybeans",
+      "expiration": 60,
+      "request_id": docId
+    }
+
+    var payreq = https.request(payment_options, function(payres) {
+      payres.setEncoding('utf8');
+      payres.on('data', function (d) {
+        var data = JSON.parse(d);
+        console.log(data);
+        if ("error" in data) {
+          response.write(JSON.stringify(data));
+          response.end();
+        } else {
+          response.write(JSON.stringify({'message': 'success'}));
+          response.end();
+        }
+      });
+    });
+    console.log(JSON.stringify(payment_data))
+    payreq.write(JSON.stringify(payment_data));
+
+    payreq.end();
+
+   });
+
+}
+
 function abraCustomer(phone, beanQty, mmQty, response) {
 
   var post_options = {
@@ -211,12 +259,8 @@ function abraCustomer(phone, beanQty, mmQty, response) {
       res.setEncoding('utf8');
       res.on('data', function (d) {
           var data = JSON.parse(d);
-          if ("error" in data) {
-            console.log(data.error.message);
-            response.write(JSON.stringify(data.error));
-            response.end();
-            return;
-          } else {
+          console.log(data);
+          if (!("error" in data)) {
             var customer = data.customer.id;
             var value = (beanQty*500) + (mmQty*1000);
             var beanData = new Beans({
@@ -229,46 +273,17 @@ function abraCustomer(phone, beanQty, mmQty, response) {
                 bean_count     : beanQty
               })
             beanData.save();
-            console.log(beanData.id);
+            data = {
+              doc_id : beanData._id,
+              name : data.customer.first_name + " " + data.customer.last_name,
+              value : value,
+              description: mmQty.toString() + " m&ms and " + beanQty.toString() + " jellybeans",
+              photo: data.customer.photo
+            };
 
-            var payment_options = {
-              host: 'merchant-bcy.abra.xyz',
-              path: '/v1/payment',
-              method: 'POST',
-              auth: 'VFL4HXB:12345',
-              json: true,
-              headers: {
-                  "content-type": "application/json",
-              }
-            }
-            var payment_data = {
-              "customer_id": customer, 
-              "amount": { "currency": "php", "value": value },
-              "description": mmQty.toString() + " m&ms and " + beanQty.toString() + " jellybeans",
-              "expiration": 60,
-              "request_id": beanData._id
-            }
-            var payreq = https.request(payment_options, function(payres) {
-              payres.setEncoding('utf8');
-              payres.on('data', function (d) {
-                var data = JSON.parse(d);
-                console.log(data);
-                if ("error" in data) {
-                  response.write(JSON.stringify(data.error));
-                  response.end();
-                  return;
-                } else {
-                  response.write(JSON.stringify({'message': 'Payment request sent to your app'}));
-                  response.end();
-                }
-              });
-            });
-            console.log(JSON.stringify(payment_data))
-            payreq.write(JSON.stringify(payment_data));
-
-            payreq.end();
           }
-
+          response.write(JSON.stringify(data));
+          response.end();
       });
   });
   req.end();
