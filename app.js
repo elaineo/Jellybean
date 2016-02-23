@@ -13,8 +13,8 @@ var PING_TIME = 20000;
 var DELAY_TIME = 1.5; 
 var MAX_RETRIES = 10;
 
-var LED_PIN = 16
-var BEAN_PIN = 18
+var LED_PIN = 18
+var BEAN_PIN = 16
 var MM_PIN = 22
 
 // pi only 
