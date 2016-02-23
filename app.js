@@ -13,6 +13,10 @@ var PING_TIME = 20000;
 var DELAY_TIME = 1.5; 
 var MAX_RETRIES = 10;
 
+var LED_PIN = 16
+var BEAN_PIN = 18
+var MM_PIN = 22
+
 // pi only 
 if ('test' == app.get('env')) {
   var gpio = null;
@@ -33,15 +37,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Dispense goods
-function dispense (qty) {
-  startMotor (16, qty);
-  // LED pin
-  startMotor (18, qty);
+function dispense (qty, pin) {
+  startMotor (LED_PIN, qty);
+  startMotor (pin, qty);
 }
 
 function cleanup() {
-  gpio.close(16);
-  gpio.close(18);
+  gpio.close(LED_PIN);
+  gpio.close(BEAN_PIN);
+  gpio.close(MM_PIN);
 }
 
 function startMotor (p, time) {
@@ -96,23 +100,23 @@ function openSocket(reconnectAttempts){
 
   connection.on('message', function(data, flags) {
     console.log(data);
-
-    // TODO! Amount will be in satoshis
-    // normalize somehow
     
     try {
       var obj = JSON.parse(data);
       var amount = parseInt(obj.amount);
+      if (obj.item == "beans") var item = BEAN_PIN;
+      else var item = MM_PIN;
     }
     catch (e) {
-      var amount = 10000;  
+      var amount = 1; 
+      var item = MM_PIN;
     }
           
     // not on the pi
     if ('test' == app.get('env')) return;
 
-    amount = Math.floor(amount/5);
-    dispense(amount);
+    amount = amount*2000;
+    dispense(amount, item);
   });
 
   connection.on('ping', function () {
