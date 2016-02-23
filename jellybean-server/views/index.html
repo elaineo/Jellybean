@@ -195,13 +195,33 @@
                     <label for="beansAbra">Beans</label>
                     <div class="input-group">
                       <select class="form-control" id="beansAbra">
+                        <option>0</option>
                         <option>1</option>
                         <option>2</option>
                         <option>3</option>
                         <option>4</option>
                         <option>5</option>
                       </select>
+                      <span class="input-group-addon">
+                        <img src="img/jellybean.png" style="max-width:20px">
+                      </span>
+                      </div>
+                    
+                    <label for="mmsAbra">M&Ms</label>
+                    <div class="input-group">
+                      <select class="form-control" id="mmsAbra">
+                        <option>0</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                      </select>
+                      <span class="input-group-addon">
+                        <img src="img/mm.png" style="max-width:20px">
+                      </span>
                     </div>
+                    
                   </div>
                 </div>
                 <div class="row">
@@ -276,12 +296,13 @@
     $("#submitAbra").click(function(e) {
         e.preventDefault();
         var phone = $("#phoneAbra").val();
-        var qty = $("#beansAbra").val();
+        var beanQty = $("#beansAbra").val();
+        var mmQty = $("#mmsAbra").val();
         $.ajax({
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({'phone': phone, 'qty': qty}),
+            data: JSON.stringify({'phone': phone, 'beanQty': beanQty, 'mmQty': mmQty}),
             url: '/abra',
             success: function(response) {
               console.log(response);
