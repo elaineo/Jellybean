@@ -1,6 +1,8 @@
 /*
     Server to monitor network and call client when appropriate
 */
+require( './db' );
+
 var WebSocketServer = require('ws').Server;
 var url = require('url');
 var express = require('express');
@@ -15,6 +17,8 @@ var favicon = require('serve-favicon');
 
 
 var app = express();
+var mongoose = require( 'mongoose' );
+var Beans     = mongoose.model( 'Beans' );
 
 app.set('port', process.env.PORT || 8080);
 app.set('views', __dirname + '/views');
@@ -96,6 +100,7 @@ app.post('/beans', function(req, res){
 
   // parse body
   var msg = {
+    "item": "beans",
     "message": "received some beans",
     "sender": "Nick",
     "amount": parseInt(amount)
@@ -113,28 +118,34 @@ app.post('/bcy', function(req, res){
     if (outputs[o].addresses.indexOf(BCY) > -1)
       var amount = outputs[0].value;    
   }
-  
   if (amount == "undefined") {
     console.log("invalid transaction;")
     res.sendStatus(400);
     return;
   }
+  Beans.findOne({}, {}, { sort: { 'created_at' : -1 } }, function(err, bean) {
+    var msg = {
+        "message": "received some Abra beans",
+        "sender": bean.first_name + bean.last_name,
+        "amount": bean.bean_count,
+        "item": "beans"
+      }
+      wsServer.broadcast(JSON.stringify(msg));
+      msg.amount = bean.mm_count;
+      msg.item = "mms"
+      wsServer.broadcast(JSON.stringify(msg));
+      bean.paid = true;
+  });
 
-  // parse body
-  var msg = {
-    "message": "received some beans",
-    "sender": "Abra",
-    "amount": Math.floor(parseInt(amount)/10)
-  }
-  wsServer.broadcast(JSON.stringify(msg));
-  res.sendStatus(200);
+  res.sendStatus(200);  
 });
 
 
 app.post('/abra', function(req, res){
   console.log(req.body);
-  var amount = parseInt(req.body.qty) * 1000
-  abraCustomer(req.body.phone, amount, res);
+  var beanQty = parseInt(req.body.beanQty) 
+  var mmQty = parseInt(req.body.mmQty) 
+  abraCustomer(req.body.phone, beanQty, mmQty, res);
 });
 
 wsServer.broadcast = function broadcast(data) {
@@ -177,7 +188,7 @@ function generateAddress(response) {
   post_req.end();
 }
 
-function abraCustomer(phone, amount, response) {
+function abraCustomer(phone, beanQty, mmQty, response) {
 
   var post_options = {
       host: 'merchant-bcy.abra.xyz',
@@ -188,7 +199,6 @@ function abraCustomer(phone, amount, response) {
 
   // Set up the request
   var req = https.request(post_options, function(res) {
-      console.log(res.statusCode);
       res.setEncoding('utf8');
       res.on('data', function (d) {
           var data = JSON.parse(d);
@@ -199,6 +209,19 @@ function abraCustomer(phone, amount, response) {
             return;
           } else {
             var customer = data.customer.id;
+            var value = (beanQty*500) + (mmQty*1000);
+            var beanData = new Beans({
+                first_name     : data.customer.first_name,
+                last_name      : data.customer.last_name,
+                photo          : data.customer.photo,
+                user_id        : data.customer.id,
+                value          : value,
+                mm_count       : mmQty,
+                bean_count     : beanQty
+              })
+            beanData.save();
+            console.log(beanData.id);
+
             var payment_options = {
               host: 'merchant-bcy.abra.xyz',
               path: '/v1/payment',
@@ -209,13 +232,12 @@ function abraCustomer(phone, amount, response) {
                   "content-type": "application/json",
               }
             }
-            var req_id = customer + Math.floor((Math.random() * 100) + 1).toString();
             var payment_data = {
               "customer_id": customer, 
-              "amount": { "currency": "php", "value": amount },
-              "description": "jellybeans",
+              "amount": { "currency": "php", "value": value },
+              "description": mmQty.toString() + " m&ms and " + beanQty.toString() + " jellybeans",
               "expiration": 60,
-              "request_id": req_id
+              "request_id": beanData._id
             }
             var payreq = https.request(payment_options, function(payres) {
               payres.setEncoding('utf8');
