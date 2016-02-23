@@ -78,9 +78,18 @@ app.get('/address', function(req, res){
 
 app.get('/beans', function(req, res){
   var msg = {
-    "message": "received some beans",
-    "sender": "Nick",
-    "amount": 10000
+    "item": "beans",
+    "sender": "test",
+    "amount": 1
+  }
+  wsServer.broadcast(JSON.stringify(msg));
+  res.sendStatus(200);
+});
+app.get('/mms', function(req, res){
+  var msg = {
+    "item": "mms",
+    "sender": "test",
+    "amount": 1
   }
   wsServer.broadcast(JSON.stringify(msg));
   res.sendStatus(200);
