@@ -191,7 +191,7 @@ function generateAddress(response) {
 
   var query = {
       'destination' : ADDRESS,
-      'callback_url': 'http://54.174.77.180/beans'
+      'callback_url': 'http://52.87.181.108/beans'
   }
   post_req.write(JSON.stringify(query));
   post_req.end();
