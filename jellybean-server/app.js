@@ -123,7 +123,7 @@ app.post('/bcy', function(req, res){
     res.sendStatus(400);
     return;
   }
-  Beans.findOne({}, {}, { sort: { 'created_at' : -1 } }, function(err, bean) {
+  Beans.findOne({'paid': false}, {}, { sort: { 'created_at' : -1 } }, function(err, bean) {
     var msg = {
         "message": "received some Abra beans",
         "sender": bean.first_name + bean.last_name,
