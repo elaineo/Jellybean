@@ -112,7 +112,7 @@ app.post('/beans', function(req, res){
     "item": "beans",
     "message": "received some beans",
     "sender": "Nick",
-    "amount": parseInt(amount)
+    "amount": Math.floor(parseInt(amount)/50000)
   }
   wsServer.broadcast(JSON.stringify(msg));
   res.sendStatus(200);
@@ -145,6 +145,8 @@ app.post('/bcy', function(req, res){
       wsServer.broadcast(JSON.stringify(msg));
       bean.paid = true;
   });
+
+  //TODO: handle cases where we can't find an attached tx
 
   res.sendStatus(200);  
 });
