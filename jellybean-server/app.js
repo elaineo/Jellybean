@@ -133,7 +133,15 @@ app.post('/bcy', function(req, res){
     return;
   }
   Beans.findOne({'paid': false}, {}, { sort: { 'created_at' : -1 } }, function(err, bean) {
-    var msg = {
+    if !(bean) {
+      var msg = {
+        "message": "received some Abra money",
+        "sender": "no record found",
+        "amount": 1,
+        "item": "mms"
+      }  
+    } else {
+      var msg = {
         "message": "received some Abra beans",
         "sender": bean.first_name + bean.last_name,
         "amount": bean.bean_count,
@@ -141,9 +149,11 @@ app.post('/bcy', function(req, res){
       }
       wsServer.broadcast(JSON.stringify(msg));
       msg.amount = bean.mm_count;
-      msg.item = "mms"
-      wsServer.broadcast(JSON.stringify(msg));
+      msg.item = "mms";
       bean.paid = true;
+      bean.save();
+    }
+      wsServer.broadcast(JSON.stringify(msg));
   });
 
   //TODO: handle cases where we can't find an attached tx
@@ -264,13 +274,13 @@ function abraCustomer(phone, beanQty, mmQty, response) {
           console.log(data);
           if (!("error" in data)) {
             var customer = data.customer.id;
-            var value = (beanQty*500) + (mmQty*1000);
+            var value = (beanQty*5) + (mmQty*10);
             var beanData = new Beans({
                 first_name     : data.customer.first_name,
                 last_name      : data.customer.last_name,
                 photo          : data.customer.photo,
                 user_id        : data.customer.id,
-                value          : value,
+                value          : value*100,
                 mm_count       : mmQty,
                 bean_count     : beanQty
               })
