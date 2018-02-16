@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
-    <meta name="description" content="Abra Jellybean Vending Machine">
+    <meta name="description" content="Jellybean Vending Machine">
     <meta name="author" content="Elaine Ou">
 
     <title>beans for bits</title>
@@ -51,7 +51,7 @@
 			<ul class="list-inline intro-social-buttons">
 				<li><a href="#buybeans" class="btn  btn-lg mybutton_standard wow swing wow fadeIn" data-wow-delay="1.2s"><span class="network-name">Buy Some Beans</span></a>
 				</li>
-                <li><a href="#buyabra" class="btn  btn-lg mybutton_cyano wow swing wow fadeIn" data-wow-delay="1.2s"><span class="network-name">Pay With Abra</span></a>
+                <li><a href="#buyabra" class="btn  btn-lg mybutton_cyano wow swing wow fadeIn" data-wow-delay="1.2s"><span class="network-name">View Demo</span></a>
                 </li>
 			</ul>
 		</div>    
@@ -132,23 +132,21 @@
 			 <div class="row">
 			 <div class="bean-form">
 				 <form>
-                    <input type="hidden" id="bean-address">
-					
 					<input id="bean-count" type="number" onchange="updatePrice()" min="1" placeholder="number of beans" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/> x 50,000 Satoshis per bean = 
 					<input id="bean-price" type="text" disabled/>
 				</form>
 			</div>
 			<div id="qr-mock" class="mockup-content">
 					<div class="morph-button wow pulse morph-button-inflow morph-button-inflow-1">
-						<button type="button " id="bean-button"><span>Pay with Bitcoin</span></button>
+						<button type="button " id="bean-button"><span>Pay with Lightning</span></button>
 						<div class="morph-content">
 							<div>
 								<div class="content-style-form content-style-form-4 ">
-									<h2 class="morph-clone">Pay with Bitcoin</h2>
+									<h2 class="morph-clone">Pay with Lightning</h2>
 									<form>
-									<div id="qrcode">Please enter a valid quantity.
-<img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='bitcoin:1ELaiNeQk4rpAL2dUYJ9MSm4dzwo7xG4E5?amount=10000">
-                                    </div>
+                      <div id="bean-total"></div>
+                      <div id="qrcode" ><img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='bitcoin:1ELaiNeQk4rpAL2dUYJ9MSm4dzwo7xG4E5?amount=10000"></div>
+                      <code id="payreq" ></code>
 									</form>
 								</div>
 							</div>
@@ -179,57 +177,11 @@
             <div class="row">
             
             <div class="col-md-6 col-md-offset-3 text-center wrap_title">
-                <h2>Pay With Abra</h2>
+                <h2>View Demo</h2>
                 <p class="lead" >This is some stuff for testing our payment API. If you don't work for Abra, please go away.</p>
             </div>            
             </div>
-              <form role="form" action="">
-                 <div class="row">
-                    <div class="form-group col-md-3 col-md-offset-3">
-                    <label for="phoneAbra">Phone Number</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="phoneAbra" id="phoneAbra" placeholder="+16502215800" required="">
-                    </div>
-                    </div>
-                    <div class="form-group col-md-3">
-                    <label for="beansAbra">Beans</label>
-                    <div class="input-group">
-                      <select class="form-control" id="beansAbra">
-                        <option>0</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                      </select>
-                      <span class="input-group-addon">
-                        <img src="img/jellybean.png" style="max-width:20px">
-                      </span>
-                      </div>
-                    
-                    <label for="mmsAbra">M&Ms</label>
-                    <div class="input-group">
-                      <select class="form-control" id="mmsAbra">
-                        <option>0</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                      </select>
-                      <span class="input-group-addon">
-                        <img src="img/mm.png" style="max-width:20px">
-                      </span>
-                    </div>
-                    
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="form-group col-md-3 col-md-offset-3">
-                    <input type="submit" name="submit" id="submitAbra" value="Submit" class="btn wow tada btn-embossed btn-primary pull-right animated animated" style="visibility: visible;">
-                  </div>
-                </div>
-              </form>
+              
             </div>
         </div>
     </div>
@@ -314,19 +266,12 @@
 	<script type="text/javascript" src="js/jquery.corner.js"></script> 
 	<script src="js/wow.min.js"></script>
 	
-	  <script>
+	<script>
+    var BEAN_PRICE = 50000;
+
     $(document).ready(function() {
-    $.ajax({
-        type: "GET",
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        url: '/address',
-        success: function(response) {
-          console.log(response);
-          $("#bean-address").val(response.address);
-        }
+      $("#bean-button").prop("disabled", true);
     });
-  });
     function updatePrice() {
         var qty = $("#bean-count").val();
         if (qty!="") $("#bean-button").prop("disabled", false);
@@ -336,56 +281,26 @@
         var address = $("#bean-address").val();
           qty = price * 100000000;
           var price = $("#bean-price").val();
-          var btcURL = "bitcoin:" + address + "?amount=" + price + "&label=Jellybean";
-          var btcHTML = '<p><a href="' + btcURL + '">Please send '+ price + ' to ' +address +'<\/a><br>Your beans will be dispensed as soon as payment is confirmed.<\/p><center><img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' + btcURL + '"></center>';
-          $('#qrcode').html(btcHTML);
+          var btcHTML = '<p>'+ price + '<br>Your beans will be dispensed as soon as payment is confirmed.<\/p>';
+          $('#bean-total').html(btcHTML);
     }
 
-    var docId;
-
-    $("#submitAbra").click(function(e) {
+    $("#bean-button").click(function(e) {
         e.preventDefault();
-        var phone = $("#phoneAbra").val();
-        var beanQty = $("#beansAbra").val();
-        var mmQty = $("#mmsAbra").val();
+        var qty = $("#bean-count").val();
+        var price = qty * BEAN_PRICE;
         $.ajax({
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({'phone': phone, 'beanQty': beanQty, 'mmQty': mmQty}),
-            url: '/abra',
-            success: function(data) {
-              console.log(data);
-              if ("error" in data) {
-                $("div#failBody").html(data.error.message);
-                $("#errorModal").modal("show");
-                return;
-              }
-              $("span#custName").html(data.name);
-              $("img#custPhoto").attr("src", data.photo);
-              $("span#custPrice").html(data.value);
-              $("span#custOrder").html(data.description);
-              $("#confirmModal").modal("show");
-              docId = data.doc_id;
-            }
-        });
-    })
-    $("#reqAbra").click(function(e) {
-        e.preventDefault();
-        $("#confirmModal").modal("hide");
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({'doc_id': docId}),
-            url: '/abra_request',
-            success: function(data) {
-              console.log(data);
-              if ("error" in data) {
-                $("div#failBody").html(data.error.message);
-                $("#errorModal").modal("show");
-              } else 
-                $("#successModal").modal("show");
+            data: JSON.stringify({'qty': qty, 'price': price}),
+            url: '/invoice',
+            success: function(response) {
+              console.log(response);
+              $("#payreq").text(response.invoice);
+              var lntb = "lightning:" + response.invoice;
+              var lnHTML = '<center><img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chld=M|0&chl=' + lntb + '"></center>';
+              $('#qrcode').html(lnHTML);
             }
         });
     })

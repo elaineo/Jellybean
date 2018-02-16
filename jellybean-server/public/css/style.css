@@ -475,11 +475,15 @@ samp {
   font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
 }
 code {
+  display: block;
+  white-space: normal;
+  word-wrap: break-word;
   padding: 2px 6px;
-  font-size: 85%;
-  color: #c7254e;
+  font-size: 65%;
+  color: #6d6d6d;
   background-color: #f9f2f4;
   border-radius: 4px;
+  margin-right:220px;
 }
 kbd {
   padding: 2px 6px;
@@ -4776,3 +4780,8 @@ footer p {
 		
 		
 	}
+ #qrcode{
+  display:block;
+  float:right;
+  width:200px;
+ }
