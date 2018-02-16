@@ -31,7 +31,7 @@ var fs = require("fs");
 
 //  Lnd cert is at ~/.lnd/tls.cert on Linux and
 //  ~/Library/Application Support/Lnd/tls.cert on Mac
-var lndCert = fs.readFileSync("~/Library/Application Support/Lnd/tls.cert");
+var lndCert = fs.readFileSync("/Users/elaineo/Library/Application Support/Lnd/tls.cert");
 var credentials = grpc.credentials.createSsl(lndCert);
 var lnrpcDescriptor = grpc.load("rpc.proto");
 var lnrpc = lnrpcDescriptor.lnrpc;
@@ -39,16 +39,7 @@ var lightning = new lnrpc.Lightning('localhost:10009', credentials);
 
 var PING_TIME = 20000;
 
-if ('test' == app.get('env')) {
-  var ADDRESS = '2NB4uLhhyWFxAUEgc8ZC1PSiz66yBqznnj3';
-  var ADDRESS_PATH = '/v1/btc/test3/payments?token=76a0fb3fe8f4a9a6df085958be202a9d';
-}
-else {
-  var ADDRESS = '1ELainEb2moSBxWyTJGpQSS6EjRL6H7Cdi';
-  var ADDRESS_PATH = '/v1/btc/main/payments?token=76a0fb3fe8f4a9a6df085958be202a9d';
-}
-
-var BCY = 'BwDf4eFgouWN22SxakwuPB5jLMSKBQZCvR';
+var BEAN_PRICE = 50000;
 
 var server = http.createServer(app);
 
@@ -79,22 +70,15 @@ app.get('/', function(req, res){
   res.render('index.html');
 });
 
-app.get('/address', function(req, res){
-  generateAddress(res); 
+app.post('/invoice', function(req, res){
+  console.log(req.body);
+  var memo = 'Beans: ' + req.body.qty.toString();
+  generateInvoice(memo, req.body.price, res); 
 });
 
 app.get('/beans', function(req, res){
   var msg = {
     "item": "beans",
-    "sender": "test",
-    "amount": 1
-  }
-  wsServer.broadcast(JSON.stringify(msg));
-  res.sendStatus(200);
-});
-app.get('/mms', function(req, res){
-  var msg = {
-    "item": "mms",
     "sender": "test",
     "amount": 1
   }
@@ -181,29 +165,13 @@ wsServer.keepAlive = function keepalive() {
   setTimeout(wsServer.keepAlive, PING_TIME);
 };
 
-function generateAddress(response) {
-  var post_options = {
-        host: 'api.blockcypher.com',
-        port: '80',
-        path: ADDRESS_PATH,
-        method: 'POST',
-  };
-
-  // Set up the request
-  var post_req = http.request(post_options, function(res) {
-      res.setEncoding('utf8');
-      // get the input address
-      res.on('data', function (data) {
-          var d = JSON.parse(data)
-          response.write(JSON.stringify({'address': d.input_address}));
-          response.end();
-      });
-  });
-
-  var query = {
-      'destination' : ADDRESS,
-      'callback_url': 'http://52.87.181.108/beans'
-  }
-  post_req.write(JSON.stringify(query));
-  post_req.end();
+function generateInvoice(memo, value, response) {
+    lightning.addInvoice({ 
+      memo: memo,
+      value: value,
+    }, function(err, data) {
+      console.log(data)
+      response.write(JSON.stringify({'invoice': data.payment_request}));
+      response.end();
+    })
 }
