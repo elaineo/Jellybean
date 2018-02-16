@@ -1,8 +1,6 @@
 /*
     Server to monitor network and call client when appropriate
 */
-require( './db' );
-
 var WebSocketServer = require('ws').Server;
 var url = require('url');
 var express = require('express');
@@ -17,8 +15,6 @@ var favicon = require('serve-favicon');
 
 
 var app = express();
-var mongoose = require( 'mongoose' );
-var Beans     = mongoose.model( 'Beans' );
 
 app.set('port', process.env.PORT || 8080);
 app.set('views', __dirname + '/views');
@@ -29,6 +25,17 @@ app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
+var grpc = require('grpc');
+var fs = require("fs");
+
+//  Lnd cert is at ~/.lnd/tls.cert on Linux and
+//  ~/Library/Application Support/Lnd/tls.cert on Mac
+var lndCert = fs.readFileSync("~/Library/Application Support/Lnd/tls.cert");
+var credentials = grpc.credentials.createSsl(lndCert);
+var lnrpcDescriptor = grpc.load("rpc.proto");
+var lnrpc = lnrpcDescriptor.lnrpc;
+var lightning = new lnrpc.Lightning('localhost:10009', credentials);
 
 var PING_TIME = 20000;
 
@@ -133,7 +140,7 @@ app.post('/bcy', function(req, res){
     return;
   }
   Beans.findOne({'paid': false}, {}, { sort: { 'created_at' : -1 } }, function(err, bean) {
-    if !(bean) {
+    if (!bean) {
       var msg = {
         "message": "received some Abra money",
         "sender": "no record found",
@@ -159,17 +166,6 @@ app.post('/bcy', function(req, res){
   //TODO: handle cases where we can't find an attached tx
 
   res.sendStatus(200);  
-});
-
-
-app.post('/abra', function(req, res){
-  var beanQty = parseInt(req.body.beanQty) 
-  var mmQty = parseInt(req.body.mmQty) 
-  abraCustomer(req.body.phone, beanQty, mmQty, res);
-});
-app.post('/abra_request', function(req, res){
-  var docId = req.body.doc_id; 
-  abraRequest(docId, res);
 });
 
 wsServer.broadcast = function broadcast(data) {
@@ -210,94 +206,4 @@ function generateAddress(response) {
   }
   post_req.write(JSON.stringify(query));
   post_req.end();
-}
-
-function abraRequest(docId, response) {
-
-  Beans.findById( docId, function(err, r) {
-
-    var payment_options = {
-      host: 'merchant-bcy.abra.xyz',
-      path: '/v1/payment',
-      method: 'POST',
-      auth: 'VFL4HXB:12345',
-      json: true,
-      headers: {
-          "content-type": "application/json",
-      }
-    }
-    var payment_data = {
-      "customer_id": r.user_id, 
-      "amount": { "currency": "php", "value": r.value },
-      "description": r.mm_count.toString() + " m&ms and " + r.bean_count.toString() + " jellybeans",
-      "expiration": 60,
-      "request_id": docId
-    }
-
-    var payreq = https.request(payment_options, function(payres) {
-      payres.setEncoding('utf8');
-      payres.on('data', function (d) {
-        var data = JSON.parse(d);
-        console.log(data);
-        if ("error" in data) {
-          response.write(JSON.stringify(data));
-          response.end();
-        } else {
-          response.write(JSON.stringify({'message': 'success'}));
-          response.end();
-        }
-      });
-    });
-    console.log(JSON.stringify(payment_data))
-    payreq.write(JSON.stringify(payment_data));
-
-    payreq.end();
-
-   });
-
-}
-
-function abraCustomer(phone, beanQty, mmQty, response) {
-
-  var post_options = {
-      host: 'merchant-bcy.abra.xyz',
-      path: '/v1/customer?phone=' + encodeURIComponent(phone),
-      method: 'GET',
-      auth: 'VFL4HXB:12345'
-  };
-
-  // Set up the request
-  var req = https.request(post_options, function(res) {
-      res.setEncoding('utf8');
-      res.on('data', function (d) {
-          var data = JSON.parse(d);
-          console.log(data);
-          if (!("error" in data)) {
-            var customer = data.customer.id;
-            var value = (beanQty*5) + (mmQty*10);
-            var beanData = new Beans({
-                first_name     : data.customer.first_name,
-                last_name      : data.customer.last_name,
-                photo          : data.customer.photo,
-                user_id        : data.customer.id,
-                value          : value*100,
-                mm_count       : mmQty,
-                bean_count     : beanQty
-              })
-            beanData.save();
-            data = {
-              doc_id : beanData._id,
-              name : data.customer.first_name + " " + data.customer.last_name,
-              value : value,
-              description: mmQty.toString() + " m&ms and " + beanQty.toString() + " jellybeans",
-              photo: data.customer.photo
-            };
-
-          }
-          response.write(JSON.stringify(data));
-          response.end();
-      });
-  });
-  req.end();
-
 }
