@@ -51,8 +51,8 @@
 			<ul class="list-inline intro-social-buttons">
 				<li><a href="#buybeans" class="btn  btn-lg mybutton_standard wow swing wow fadeIn" data-wow-delay="1.2s"><span class="network-name">Buy Some Beans</span></a>
 				</li>
-                <li><a href="#buyabra" class="btn  btn-lg mybutton_cyano wow swing wow fadeIn" data-wow-delay="1.2s"><span class="network-name">View Demo</span></a>
-                </li>
+        <li><a href="#viewdemo" class="btn  btn-lg mybutton_cyano wow swing wow fadeIn" data-wow-delay="1.2s"><span class="network-name">View Demo</span></a>
+        </li>
 			</ul>
 		</div>    
         <!-- /.container -->
@@ -105,14 +105,14 @@
             </div>
 			<div class="row">
 				<div class="col-sm-12 wow fadeInDown ">
-				<p class="lead"><span style="color:#381c66"><b>beans for bits</b></span> is controlled by an Ethereum client. The control protocol is dynamic, so the vending machine can adjust to market demand. The contract governing the jellybean machine is publicly viewable on the blockchain, allowing customers to verify the code.</p>
+				<p class="lead"><span style="color:#381c66"><b>beans for bits</b></span> is controlled by a lightning node. The control protocol is dynamic, so the vending machine can adjust to market demand. The contract governing the jellybean machine is publicly viewable on the blockchain, allowing customers to verify the code.</p>
 				</div>
 			</div>
             <div class="row">
                 <div class="col-sm-12 wow fadeInDown ">
                 <h3>How do I get my beans?</h3>
-                <p class="lead">Jellybeans are dispensed from the vending machine at <a href="https://www.goabra.com/">Abra's office</a> in Mountain View, California. <br>Non-employees are welcome to purchase beans to feed our engineers, like at the zoo.</p>
-                <h4><a style="color:#381c66" href="http://elaineou.com/2016/02/11/trust-minimized-property-control-with-jellybeans-and-ethereum/">More info about the Jellybean machine...</a></h4>
+                <p class="lead">Jellybeans are dispensed from the vending machine at <a href="https://www.goabra.com/">Abra's office</a> in Mountain View, California. <br>Non-employees are welcome to purchase beans to feed the engineers, like at the zoo.</p>
+                <h4><a style="color:#381c66" href="http://elaineou.com/2016/02/11/trust-minimized-property-control-with-jellybeans-and-ethereum/">Instructions on how to build your own Lightning-powered vending machine...</a></h4>
                 <center><img  class="rotate" src="img/jellybean.png" style="max-width:100px"></center>
                 </div>
             </div>
@@ -132,6 +132,7 @@
 			 <div class="row">
 			 <div class="bean-form">
 				 <form>
+          <input id="bean-rhash" type="hidden">
 					<input id="bean-count" type="number" onchange="updatePrice()" min="1" placeholder="number of beans" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/> x 50,000 Satoshis per bean = 
 					<input id="bean-price" type="text" disabled/>
 				</form>
@@ -144,9 +145,10 @@
 								<div class="content-style-form content-style-form-4 ">
 									<h2 class="morph-clone">Pay with Lightning</h2>
 									<form>
-                      <div id="bean-total"></div>
-                      <div id="qrcode" ><img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='bitcoin:1ELaiNeQk4rpAL2dUYJ9MSm4dzwo7xG4E5?amount=10000"></div>
+                      <div id="bean-total">1 BTC<br></div>
+                      <div id="qrcode" ><img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chld=M|0&chl='bitcoin:1ELaiNeQk4rpAL2dUYJ9MSm4dzwo7xG4E5?amount=10000"></div>
                       <code id="payreq" ></code>
+                      <a id="bean-checkout" class="btn btn-info">Pay with Lightning</a>
 									</form>
 								</div>
 							</div>
@@ -171,8 +173,7 @@
 			</div>
 		</div>
 	</div>
-	    <!-- Abra -->
-    <div id="buyabra" class="content-section-b">
+    <div id="viewdemo" class="content-section-b">
         <div class="container">
             <div class="row">
             
@@ -191,56 +192,29 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 text-center">
-            beans for bits is definitely not endorsed by <a href="http://goabra.com" target="_blank"><img src="img/abra.png"></a>
+            beans for bits was created by the slackers at <a href="https://globalfinancialaccess.com" _target="_blank"><img src="img/gfa.png"></a>
 			<br>
           </div> <!-- /col-xs-7 -->
         </div>
       </div>
     </footer>
 
-
-    <!-- Modal stuff -->
     <div id="confirmModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
           <div class="modal-content">
+            <div class="modal-header">
+              <center><img  class="rotate" src="img/jellybean.png" style="max-width:60px"><br>
+                  <h4>Payment Received!</h4></center>
+            </div>
             <div class="modal-body">
-              <p style="text-align:center">
-                  <img id="custPhoto" style="max-width:80px" src="img/abra_logo.png"><br>
-                  <span id="custName">Jellybean Bot</span>
-              </p>
               <p>
-                <b>Order Summary: </b> <span id="custOrder"></span><br>
-                <b>Total: </b> <span style="margin-left:5em" id="custPrice"></span>₱
+                <b>Date: </b> <span style="margin-left:5em" id="confDate"></span><br>
+                <b>Order Summary: </b> <span id="confOrder"></span><br>
+                <b>Total: </b> <span style="margin-left:5em" id="confPrice"></span> satoshis
               </p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-              <button type="button" id="reqAbra" class="btn btn-primary">Send Request</button>
-            </div>
-          </div>
-        </div>
-    </div>
-    <div id="successModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-body">
-              <p style="text-align:center">
-                  <img style="max-width:40px" src="img/abra_logo.png"><br>
-                  A request has been sent to your Abra app. Please complete your payment.
-              </p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hooray</button>
-            </div>
-          </div>
-        </div>
-    </div>
-    <div id="errorModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-body">
-            <div data-dismiss="modal" class="modal-body alert alert-danger" id="failBody">
-            </div>
+              <button type="button" class="btn btn-info" data-dismiss="modal">Hooray</button>
             </div>
           </div>
         </div>
@@ -256,8 +230,7 @@
 	<script type="text/javascript">
 	  jQuery(function($) {
 		$(document).ready( function() {
-		  $('.navbar-default').stickUp();
-		  
+		  $('.navbar-default').stickUp();		  
 		});
 	  });
 	
@@ -301,6 +274,21 @@
               var lntb = "lightning:" + response.invoice;
               var lnHTML = '<center><img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chld=M|0&chl=' + lntb + '"></center>';
               $('#qrcode').html(lnHTML);
+              $('#bean-checkout').attr('href', lntb);
+              var lnSocket = new WebSocket("ws://localhost:8080/lnsocket?r_hash=" + 
+                encodeURIComponent(response.r_hash));
+              $('#bean-rhash').val(response.r_hash);
+              lnSocket.onmessage = function (event) {
+                console.log(event.data);
+                var data = JSON.parse(event.data);
+                if (data.settle_date) {
+                  $("span#confPrice").html(data.value);
+                  $("span#confOrder").html(data.memo);
+                  $("span#confDate").html(new Date(data.settle_date*1000));
+                  $("#confirmModal").modal("show");
+                  $('#bean-total').html("Payment Received!");
+                }
+              }
             }
         });
     })
