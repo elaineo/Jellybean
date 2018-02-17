@@ -28,6 +28,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 var grpc = require('grpc');
 var fs = require("fs");
+var protobuf = require("protobufjs");
+
 
 //  Lnd cert is at ~/.lnd/tls.cert on Linux and
 //  ~/Library/Application Support/Lnd/tls.cert on Mac
@@ -36,10 +38,18 @@ var credentials = grpc.credentials.createSsl(lndCert);
 var lnrpcDescriptor = grpc.load("rpc.proto");
 var lnrpc = lnrpcDescriptor.lnrpc;
 var lightning = new lnrpc.Lightning('localhost:10009', credentials);
+var lnclient = lightning.subscribeInvoices({});
 
-var PING_TIME = 20000;
-
-var BEAN_PRICE = 50000;
+lnclient.on('data', function(message) {
+    console.log(message);
+    if (message.settled) wsServer.confirm(message);
+});
+lnclient.on('end', function() {
+    console.log("END");
+});
+lnclient.on('status', function(status) {
+    console.log("Current status: " + status);
+});
 
 var server = http.createServer(app);
 
@@ -47,28 +57,37 @@ server.listen(app.get('port'), function() {
     console.log((new Date()) + " Server is listening on port " + app.get('port'));
 });
 
-// create the web socket server
+
+// create the web socket server to vending machine
 var wsServer = new WebSocketServer({
     server: server
 });
 
 wsServer.on('connection', function connection(ws) {
   var location = url.parse(ws.upgradeReq.url, true);
+  if (location.query) ws.r_hash = location.query.r_hash;
   console.log((new Date()) + ' Connection from origin ' + util.inspect(location, false, null) + '.');
 
   ws.on('message', function incoming(message) {
     console.log('received: %s', message);
   });
-  // setTimeout(wsServer.keepAlive, PING_TIME);
 
   ws.send('Greetings, client!');
 });
 
+var PING_TIME = 20000;
 
-// serve a page
+var BEAN_PRICE = 50000;
+
 app.get('/', function(req, res){
   res.render('index.html');
 });
+
+app.get('/clients', function(req, res){
+  var clients = wsServer.clients.map(c => c.r_hash);
+  res.write(JSON.stringify(clients));
+  res.end()
+})
 
 app.post('/invoice', function(req, res){
   console.log(req.body);
@@ -86,72 +105,6 @@ app.get('/beans', function(req, res){
   res.sendStatus(200);
 });
 
-app.post('/beans', function(req, res){
-  console.log(req.body);
-
-  var amount = req.body.value;
-  var address = req.body.input_address;
-
-  if (amount == "undefined") {
-    console.log("invalid transaction;")
-    res.sendStatus(400);
-    return;
-  }
-
-  // parse body
-  var msg = {
-    "item": "beans",
-    "message": "received some beans",
-    "sender": "Nick",
-    "amount": Math.floor(parseInt(amount)/50000)
-  }
-  wsServer.broadcast(JSON.stringify(msg));
-  res.sendStatus(200);
-});
-
-app.post('/bcy', function(req, res){
-  console.log(req.body);
-
-  var outputs = req.body.outputs;
-
-  for (var o=0; o<outputs.length; o++) {
-    if (outputs[o].addresses.indexOf(BCY) > -1)
-      var amount = outputs[0].value;    
-  }
-  if (amount == "undefined") {
-    console.log("invalid transaction;")
-    res.sendStatus(400);
-    return;
-  }
-  Beans.findOne({'paid': false}, {}, { sort: { 'created_at' : -1 } }, function(err, bean) {
-    if (!bean) {
-      var msg = {
-        "message": "received some Abra money",
-        "sender": "no record found",
-        "amount": 1,
-        "item": "mms"
-      }  
-    } else {
-      var msg = {
-        "message": "received some Abra beans",
-        "sender": bean.first_name + bean.last_name,
-        "amount": bean.bean_count,
-        "item": "beans"
-      }
-      wsServer.broadcast(JSON.stringify(msg));
-      msg.amount = bean.mm_count;
-      msg.item = "mms";
-      bean.paid = true;
-      bean.save();
-    }
-      wsServer.broadcast(JSON.stringify(msg));
-  });
-
-  //TODO: handle cases where we can't find an attached tx
-
-  res.sendStatus(200);  
-});
-
 wsServer.broadcast = function broadcast(data) {
   wsServer.clients.forEach(function each(client) {
     client.send(data);
@@ -165,13 +118,26 @@ wsServer.keepAlive = function keepalive() {
   setTimeout(wsServer.keepAlive, PING_TIME);
 };
 
+wsServer.confirm = function confirm(message) {
+  wsServer.clients.forEach(function each(client) {
+    var r_hash = protobuf.ByteBuffer.btoa(message.r_hash);
+    console.log(r_hash)
+    var response = {'settle_date': message.settle_date, memo: message.memo, value: message.value};
+    if (client.r_hash === r_hash) client.send(JSON.stringify(response));
+  });
+};
+
+
 function generateInvoice(memo, value, response) {
     lightning.addInvoice({ 
       memo: memo,
       value: value,
     }, function(err, data) {
-      console.log(data)
-      response.write(JSON.stringify({'invoice': data.payment_request}));
+      console.log(data);
+      response.write(JSON.stringify({
+        'invoice': data.payment_request, 
+        'r_hash': protobuf.ByteBuffer.btoa(data.r_hash)
+      }));
       response.end();
     })
 }
