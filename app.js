@@ -15,8 +15,8 @@ var PING_TIME = 20000;
 var DELAY_TIME = 1.5; 
 var MAX_RETRIES = 10;
 
-var LED_PIN = new Gpio(26, 'out'); 
-var BEAN_PIN = new Gpio(16, 'out'); 
+var LED_PIN = 26; 
+var BEAN_PIN = 16; 
 
 // pi only 
 if ('test' == app.get('env')) {
@@ -41,19 +41,16 @@ function dispense (qty, pin) {
   startMotor (pin, qty);
 }
 
-function cleanup() {
-  LED_PIN.unexport();
-  BEAN_PIN.unexport();
-}
-
 function startMotor (p, time) {
-  p.write(1, function() {          
+  pin = new Gpio(p, 'out')
+  pin.write(1, function() {          
     console.log("writing to " + p.toString() + " for " + time);
-    setTimeout(function() { stopMotor(p); }, time);
+    setTimeout(function() { stopMotor(pin); }, time);
   });  
 }
 function stopMotor(p) {
   p.writeSync(0);
+  p.unexport();
 }
 
 var http = require('http').Server(app);
