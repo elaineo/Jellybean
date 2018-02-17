@@ -107,7 +107,7 @@ function openSocket(reconnectAttempts){
     // not on the pi
     if ('test' == app.get('env')) return;
 
-    amount = amount*2000;
+    amount = amount*100;
     dispense(amount, item);
   });
 

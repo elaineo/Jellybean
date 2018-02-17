@@ -130,11 +130,16 @@ wsServer.keepAlive = function keepalive() {
 };
 
 wsServer.confirm = function confirm(message) {
+  var msg = {
+    "item": "beans",
+    "amount": parseInt(message.value / BEAN_PRICE)
+  }
   wsServer.clients.forEach(function each(client) {
     var r_hash = protobuf.ByteBuffer.btoa(message.r_hash);
     console.log(r_hash)
     var response = {'settle_date': message.settle_date, memo: message.memo, value: message.value};
     if (client.r_hash === r_hash) client.send(JSON.stringify(response));
+    if (!client.r_hash) client.send(JSON.stringify(msg));
   });
 };
 
