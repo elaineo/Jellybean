@@ -43,10 +43,9 @@ function dispense (qty, pin) {
 
 function startMotor (p, time) {
   pin = new Gpio(p, 'out')
-  pin.write(1, function() {          
-    console.log("writing to " + p.toString() + " for " + time);
-    setTimeout(function() { stopMotor(pin); }, time);
-  });  
+  pin.writeSync(1);
+  console.log("writing to " + p.toString() + " for " + time);
+  setTimeout(function() { stopMotor(pin); }, time);  
 }
 function stopMotor(p) {
   p.writeSync(0);
