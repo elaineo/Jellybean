@@ -6,6 +6,8 @@ var logger = require('morgan');
 var bodyParser = require('body-parser'); 
 var app = express();
 
+var gpio = require('onoff').Gpio; 
+
 var WebSocket = require('ws');
 var t_ = require('./jTime.js');
 
@@ -13,18 +15,15 @@ var PING_TIME = 20000;
 var DELAY_TIME = 1.5; 
 var MAX_RETRIES = 10;
 
-var LED_PIN = 18
-var BEAN_PIN = 16
-var MM_PIN = 22
+var LED_PIN = new Gpio(26, 'out'); 
+var BEAN_PIN = new Gpio(16, 'out'); 
 
 // pi only 
 if ('test' == app.get('env')) {
-  var gpio = null;
   var wsurl = 'ws://127.0.0.1:8080'
 }
 else {
-  var gpio = require("pi-gpio");
-  var wsurl = 'ws://52.87.181.108';
+  var wsurl = 'ws://45.76.235.75';
 }
 
 var connection; 
@@ -43,21 +42,18 @@ function dispense (qty, pin) {
 }
 
 function cleanup() {
-  gpio.close(LED_PIN);
-  gpio.close(BEAN_PIN);
-  gpio.close(MM_PIN);
+  LED_PIN.unexport();
+  BEAN_PIN.unexport();
 }
 
 function startMotor (p, time) {
-  gpio.open(p, "output", function(err) {   
-    gpio.write(p, 1, function() {          
-      console.log("writing to " + p + " for " + time);
-      setTimeout(function() { stopMotor(p); }, time);
-    });
+  p.write(1, function() {          
+    console.log("writing to " + p.toString() + " for " + time);
+    setTimeout(function() { stopMotor(p); }, time);
   });  
 }
 function stopMotor(p) {
-  gpio.close(p);
+  p.writeSync(0);
 }
 
 var http = require('http').Server(app);
@@ -105,11 +101,11 @@ function openSocket(reconnectAttempts){
       var obj = JSON.parse(data);
       var amount = parseInt(obj.amount);
       if (obj.item == "beans") var item = BEAN_PIN;
-      else var item = MM_PIN;
+      else return;
     }
     catch (e) {
       var amount = 1; 
-      var item = MM_PIN;
+      var item = LED_PIN;
     }
           
     // not on the pi
