@@ -6,7 +6,7 @@ var logger = require('morgan');
 var bodyParser = require('body-parser'); 
 var app = express();
 
-var gpio = require('onoff').Gpio; 
+var Gpio = require('onoff').Gpio; 
 
 var WebSocket = require('ws');
 var t_ = require('./jTime.js');
