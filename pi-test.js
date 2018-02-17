@@ -20,4 +20,4 @@ function endBlink() { //function to stop blinking
   Beans.unexport();
 }
 
-setTimeout(endBlink, 5000); //stop blinking after 5 seconds
+setTimeout(endBlink, 1000); //stop blinking after 1 seconds
