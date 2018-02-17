@@ -484,6 +484,9 @@ code {
   background-color: #f9f2f4;
   border-radius: 4px;
   margin-right:220px;
+  margin-top:20px;
+  margin-bottom:20px;
+  height:200px;
 }
 kbd {
   padding: 2px 6px;
