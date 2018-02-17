@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
-    <meta name="description" content="Abra Jellybean Vending Machine">
+    <meta name="description" content="Jellybean Vending Machine">
     <meta name="author" content="Elaine Ou">
 
     <title>beans for bits</title>
@@ -17,8 +17,8 @@
  
     <!-- Custom Google Web Font -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic' rel='stylesheet' type='text/css'>
-	<link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
 	
     <!-- Custom CSS-->
     <link href="css/general.css" rel="stylesheet">
@@ -51,8 +51,8 @@
 			<ul class="list-inline intro-social-buttons">
 				<li><a href="#buybeans" class="btn  btn-lg mybutton_standard wow swing wow fadeIn" data-wow-delay="1.2s"><span class="network-name">Buy Some Beans</span></a>
 				</li>
-                <li><a href="#buyabra" class="btn  btn-lg mybutton_cyano wow swing wow fadeIn" data-wow-delay="1.2s"><span class="network-name">Pay With Abra</span></a>
-                </li>
+        <li><a href="#viewdemo" class="btn  btn-lg mybutton_cyano wow swing wow fadeIn" data-wow-delay="1.2s"><span class="network-name">View Demo</span></a>
+        </li>
 			</ul>
 		</div>    
         <!-- /.container -->
@@ -105,14 +105,14 @@
             </div>
 			<div class="row">
 				<div class="col-sm-12 wow fadeInDown ">
-				<p class="lead"><span style="color:#381c66"><b>beans for bits</b></span> is controlled by an Ethereum client. The control protocol is dynamic, so the vending machine can adjust to market demand. The contract governing the jellybean machine is publicly viewable on the blockchain, allowing customers to verify the code.</p>
+				<p class="lead"><span style="color:#381c66"><b>beans for bits</b></span> is controlled by a lightning node. The design was adapted from a <a href="https://medium.com/@eiaine/selling-real-world-goods-with-a-21-bitcoin-computer-c413ffe8376c" target="_blank">21-computer vending machine</a> built for Abra many years ago.</p>
 				</div>
 			</div>
             <div class="row">
                 <div class="col-sm-12 wow fadeInDown ">
                 <h3>How do I get my beans?</h3>
-                <p class="lead">Jellybeans are dispensed from the vending machine at <a href="https://www.goabra.com/">Abra's office</a> in Mountain View, California. <br>Non-employees are welcome to purchase beans to feed our engineers, like at the zoo.</p>
-                <h4><a style="color:#381c66" href="http://elaineou.com/2016/02/11/trust-minimized-property-control-with-jellybeans-and-ethereum/">More info about the Jellybean machine...</a></h4>
+                <p class="lead">Jellybeans are dispensed from the vending machine at <a href="https://www.goabra.com/">Abra's office</a> in Mountain View, California. <br>Non-employees are welcome to purchase beans to feed the engineers, like at the zoo.</p>
+                <h4><a style="color:#381c66" href="http://elaineou.com/2016/02/11/trust-minimized-property-control-with-jellybeans-and-ethereum/" target="_blank">Instructions on how to build your own Lightning-powered vending machine...</a></h4>
                 <center><img  class="rotate" src="img/jellybean.png" style="max-width:100px"></center>
                 </div>
             </div>
@@ -132,23 +132,23 @@
 			 <div class="row">
 			 <div class="bean-form">
 				 <form>
-                    <input type="hidden" id="bean-address">
-					
+          <input id="bean-rhash" type="hidden">
 					<input id="bean-count" type="number" onchange="updatePrice()" min="1" placeholder="number of beans" onkeyup="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/> x 50,000 Satoshis per bean = 
 					<input id="bean-price" type="text" disabled/>
 				</form>
 			</div>
 			<div id="qr-mock" class="mockup-content">
 					<div class="morph-button wow pulse morph-button-inflow morph-button-inflow-1">
-						<button type="button " id="bean-button"><span>Pay with Bitcoin</span></button>
+						<button type="button " id="bean-button"><span>Pay with Lightning</span></button>
 						<div class="morph-content">
 							<div>
 								<div class="content-style-form content-style-form-4 ">
-									<h2 class="morph-clone">Pay with Bitcoin</h2>
+									<h2 class="morph-clone">Pay with Lightning</h2>
 									<form>
-									<div id="qrcode">Please enter a valid quantity.
-<img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='bitcoin:1ELaiNeQk4rpAL2dUYJ9MSm4dzwo7xG4E5?amount=10000">
-                                    </div>
+                      <div id="bean-total">1 BTC<br></div>
+                      <div id="qrcode" ><img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chld=M|0&chl='bitcoin:1ELaiNeQk4rpAL2dUYJ9MSm4dzwo7xG4E5?amount=10000"></div>
+                      <code id="payreq" ></code>
+                      <a id="bean-checkout" class="btn btn-info">Pay with Lightning</a>
 									</form>
 								</div>
 							</div>
@@ -173,63 +173,16 @@
 			</div>
 		</div>
 	</div>
-	    <!-- Abra -->
-    <div id="buyabra" class="content-section-b">
+    <div id="viewdemo" class="content-section-b">
         <div class="container">
             <div class="row">
             
             <div class="col-md-6 col-md-offset-3 text-center wrap_title">
-                <h2>Pay With Abra</h2>
-                <p class="lead" >This is some stuff for testing our payment API. If you don't work for Abra, please go away.</p>
+                <h2>View Demo</h2>
+                <p class="lead" >Here is an example of a lightning-powered vending machine in action. (insert video)</p>
             </div>            
             </div>
-              <form role="form" action="">
-                 <div class="row">
-                    <div class="form-group col-md-3 col-md-offset-3">
-                    <label for="phoneAbra">Phone Number</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="phoneAbra" id="phoneAbra" placeholder="+16502215800" required="">
-                    </div>
-                    </div>
-                    <div class="form-group col-md-3">
-                    <label for="beansAbra">Beans</label>
-                    <div class="input-group">
-                      <select class="form-control" id="beansAbra">
-                        <option>0</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                      </select>
-                      <span class="input-group-addon">
-                        <img src="img/jellybean.png" style="max-width:20px">
-                      </span>
-                      </div>
-                    
-                    <label for="mmsAbra">M&Ms</label>
-                    <div class="input-group">
-                      <select class="form-control" id="mmsAbra">
-                        <option>0</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                      </select>
-                      <span class="input-group-addon">
-                        <img src="img/mm.png" style="max-width:20px">
-                      </span>
-                    </div>
-                    
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="form-group col-md-3 col-md-offset-3">
-                    <input type="submit" name="submit" id="submitAbra" value="Submit" class="btn wow tada btn-embossed btn-primary pull-right animated animated" style="visibility: visible;">
-                  </div>
-                </div>
-              </form>
+              
             </div>
         </div>
     </div>
@@ -239,56 +192,31 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 text-center">
-            beans for bits is definitely not endorsed by <a href="http://goabra.com" target="_blank"><img src="img/abra.png"></a>
+            <a href="https://github.com/elaineo/Jellybean" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" style="fill: #a6a6a6"/></svg></a>&nbsp; &nbsp;
+            <a href="https://twitter.com/eiaine" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6.066 9.645c.183 4.04-2.83 8.544-8.164 8.544-1.622 0-3.131-.476-4.402-1.291 1.524.18 3.045-.244 4.252-1.189-1.256-.023-2.317-.854-2.684-1.995.451.086.895.061 1.298-.049-1.381-.278-2.335-1.522-2.304-2.853.388.215.83.344 1.301.359-1.279-.855-1.641-2.544-.889-3.835 1.416 1.738 3.533 2.881 5.92 3.001-.419-1.796.944-3.527 2.799-3.527.825 0 1.572.349 2.096.907.654-.128 1.27-.368 1.824-.697-.215.671-.67 1.233-1.263 1.589.581-.07 1.135-.224 1.649-.453-.384.578-.87 1.084-1.433 1.489z" style="fill: #a6a6a6"/></svg></a>&nbsp; &nbsp;
+            <a href="https://elaineou.com" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M21 13v10h-6v-6h-6v6h-6v-10h-3l12-12 12 12h-3zm-1-5.907v-5.093h-3v2.093l3 3z" style="fill: #a6a6a6"/></svg></a>
 			<br>
           </div> <!-- /col-xs-7 -->
         </div>
       </div>
     </footer>
 
-
-    <!-- Modal stuff -->
     <div id="confirmModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
           <div class="modal-content">
+            <div class="modal-header">
+              <center><img  class="rotate" src="img/jellybean.png" style="max-width:60px"><br>
+                  <h4>Payment Received!</h4></center>
+            </div>
             <div class="modal-body">
-              <p style="text-align:center">
-                  <img id="custPhoto" style="max-width:80px" src="img/abra_logo.png"><br>
-                  <span id="custName">Jellybean Bot</span>
-              </p>
               <p>
-                <b>Order Summary: </b> <span id="custOrder"></span><br>
-                <b>Total: </b> <span style="margin-left:5em" id="custPrice"></span>₱
+                <b>Date: </b> <span style="margin-left:5em" id="confDate"></span><br>
+                <b>Order Summary: </b> <span id="confOrder"></span><br>
+                <b>Total: </b> <span style="margin-left:5em" id="confPrice"></span> satoshis
               </p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-              <button type="button" id="reqAbra" class="btn btn-primary">Send Request</button>
-            </div>
-          </div>
-        </div>
-    </div>
-    <div id="successModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-body">
-              <p style="text-align:center">
-                  <img style="max-width:40px" src="img/abra_logo.png"><br>
-                  A request has been sent to your Abra app. Please complete your payment.
-              </p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hooray</button>
-            </div>
-          </div>
-        </div>
-    </div>
-    <div id="errorModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-body">
-            <div data-dismiss="modal" class="modal-body alert alert-danger" id="failBody">
-            </div>
+              <button type="button" class="btn btn-info" data-dismiss="modal">Hooray</button>
             </div>
           </div>
         </div>
@@ -304,8 +232,7 @@
 	<script type="text/javascript">
 	  jQuery(function($) {
 		$(document).ready( function() {
-		  $('.navbar-default').stickUp();
-		  
+		  $('.navbar-default').stickUp();		  
 		});
 	  });
 	
@@ -314,19 +241,12 @@
 	<script type="text/javascript" src="js/jquery.corner.js"></script> 
 	<script src="js/wow.min.js"></script>
 	
-	  <script>
+	<script>
+    var BEAN_PRICE = 50000;
+
     $(document).ready(function() {
-    $.ajax({
-        type: "GET",
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        url: '/address',
-        success: function(response) {
-          console.log(response);
-          $("#bean-address").val(response.address);
-        }
+      $("#bean-button").prop("disabled", true);
     });
-  });
     function updatePrice() {
         var qty = $("#bean-count").val();
         if (qty!="") $("#bean-button").prop("disabled", false);
@@ -336,56 +256,41 @@
         var address = $("#bean-address").val();
           qty = price * 100000000;
           var price = $("#bean-price").val();
-          var btcURL = "bitcoin:" + address + "?amount=" + price + "&label=Jellybean";
-          var btcHTML = '<p><a href="' + btcURL + '">Please send '+ price + ' to ' +address +'<\/a><br>Your beans will be dispensed as soon as payment is confirmed.<\/p><center><img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' + btcURL + '"></center>';
-          $('#qrcode').html(btcHTML);
+          var btcHTML = '<p>'+ price + '<br>Your beans will be dispensed as soon as payment is confirmed.<\/p>';
+          $('#bean-total').html(btcHTML);
     }
 
-    var docId;
-
-    $("#submitAbra").click(function(e) {
+    $("#bean-button").click(function(e) {
         e.preventDefault();
-        var phone = $("#phoneAbra").val();
-        var beanQty = $("#beansAbra").val();
-        var mmQty = $("#mmsAbra").val();
+        var qty = $("#bean-count").val();
+        var price = qty * BEAN_PRICE;
         $.ajax({
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({'phone': phone, 'beanQty': beanQty, 'mmQty': mmQty}),
-            url: '/abra',
-            success: function(data) {
-              console.log(data);
-              if ("error" in data) {
-                $("div#failBody").html(data.error.message);
-                $("#errorModal").modal("show");
-                return;
+            data: JSON.stringify({'qty': qty, 'price': price}),
+            url: '/invoice',
+            success: function(response) {
+              console.log(response);
+              $("#payreq").text(response.invoice);
+              var lntb = "lightning:" + response.invoice;
+              var lnHTML = '<center><img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chld=M|0&chl=' + lntb + '"></center>';
+              $('#qrcode').html(lnHTML);
+              $('#bean-checkout').attr('href', lntb);
+              var lnSocket = new WebSocket("ws://localhost:8080/lnsocket?r_hash=" + 
+                encodeURIComponent(response.r_hash));
+              $('#bean-rhash').val(response.r_hash);
+              lnSocket.onmessage = function (event) {
+                console.log(event.data);
+                var data = JSON.parse(event.data);
+                if (data.settle_date) {
+                  $("span#confPrice").html(data.value);
+                  $("span#confOrder").html(data.memo);
+                  $("span#confDate").html(new Date(data.settle_date*1000));
+                  $("#confirmModal").modal("show");
+                  $('#bean-total').html("Payment Received!");
+                }
               }
-              $("span#custName").html(data.name);
-              $("img#custPhoto").attr("src", data.photo);
-              $("span#custPrice").html(data.value);
-              $("span#custOrder").html(data.description);
-              $("#confirmModal").modal("show");
-              docId = data.doc_id;
-            }
-        });
-    })
-    $("#reqAbra").click(function(e) {
-        e.preventDefault();
-        $("#confirmModal").modal("hide");
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({'doc_id': docId}),
-            url: '/abra_request',
-            success: function(data) {
-              console.log(data);
-              if ("error" in data) {
-                $("div#failBody").html(data.error.message);
-                $("#errorModal").modal("show");
-              } else 
-                $("#successModal").modal("show");
             }
         });
     })
