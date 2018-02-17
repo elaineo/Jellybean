@@ -51,7 +51,13 @@ lnclient.on('status', function(status) {
     console.log("Current status: " + status);
 });
 
-var server = http.createServer(app);
+var options = {
+  key: fs.readFileSync('/etc/letsencrypt/live/beans4bits.com/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/beans4bits.com/cert.pem'),
+  ca: fs.readFileSync('/etc/letsencrypt/live/beans4bits.com/chain.pem')
+};
+
+var server = https.createServer(options, app);
 
 server.listen(app.get('port'), function() { 
     console.log((new Date()) + " Server is listening on port " + app.get('port'));
