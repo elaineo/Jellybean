@@ -1,19 +1,23 @@
-/*
-    GPIO test */ 
+var Gpio = require('onoff').Gpio; 
+var LED = new Gpio(26, 'out'); 
+var Beans = new Gpio(16, 'out'); 
+var blinkInterval = setInterval(blinkLED, 250); //run the blinkLED function every 250ms
 
-var gpio = require("pi-gpio");
-
-function startUp(p) {
-  gpio.open(p, "output", function(err) {
-    gpio.write(p, 1, function() {
-      console.log("writing to " + p);
-      setTimeout(function() { cleanup(p) }, 10000);
-    });
-  });
+function blinkLED() { //function to start blinking
+  if (LED.readSync() === 0) { //check the pin state, if the state is 0 (or off)
+    LED.writeSync(1); //set pin state to 1 (turn LED on)
+  } else {
+    LED.writeSync(0); //set pin state to 0 (turn LED off)
+  }
 }
-function cleanup(q) {
-  gpio.close(q);
+Beans.writeSync(1);
+
+function endBlink() { //function to stop blinking
+  clearInterval(blinkInterval); // Stop blink intervals
+  LED.writeSync(0); // Turn LED off
+  LED.unexport(); // Unexport GPIO to free resources
+  Beans.writeSync(0);
+  Beans.unexport();
 }
 
-startUp(16);;
-startUp(18);
+setTimeout(endBlink, 5000); //stop blinking after 5 seconds
