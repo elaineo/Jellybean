@@ -23,7 +23,7 @@ if ('test' == app.get('env')) {
   var wsurl = 'ws://127.0.0.1:8080'
 }
 else {
-  var wsurl = 'ws://45.76.235.75';
+  var wsurl = 'wss://beans4bits.com';
 }
 
 var connection; 
