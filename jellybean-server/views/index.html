@@ -277,7 +277,7 @@
               var lnHTML = '<center><img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chld=M|0&chl=' + lntb + '"></center>';
               $('#qrcode').html(lnHTML);
               $('#bean-checkout').attr('href', lntb);
-              var lnSocket = new WebSocket("ws://localhost:8080/lnsocket?r_hash=" + 
+              var lnSocket = new WebSocket("wss://beans4bits.com/lnsocket?r_hash=" + 
                 encodeURIComponent(response.r_hash));
               $('#bean-rhash').val(response.r_hash);
               lnSocket.onmessage = function (event) {
