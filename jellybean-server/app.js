@@ -72,7 +72,7 @@ wsServer.on('connection', function connection(ws) {
     console.log('received: %s', message);
   });
 
-  ws.send('Greetings, client!');
+  ws.send('{"msg": "Greetings, client!"}');
 });
 
 var PING_TIME = 20000;
@@ -89,9 +89,14 @@ app.get('/clients', function(req, res){
   res.end()
 })
 
+app.get('/test', function(req, res){
+  wsServer.broadcast(JSON.stringify({"settle_date":"1518829726","memo":"4 Beans","value":"5"}));
+  res.sendStatus(200);
+})
+
 app.post('/invoice', function(req, res){
   console.log(req.body);
-  var memo = 'Beans: ' + req.body.qty.toString();
+  var memo = req.body.qty.toString() + ' Beans';
   generateInvoice(memo, req.body.price, res); 
 });
 
