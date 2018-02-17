@@ -45,7 +45,7 @@ function startMotor (p, time) {
   pin = new Gpio(p, 'out')
   pin.writeSync(1);
   console.log("writing to " + p.toString() + " for " + time);
-  setTimeout(function() { stopMotor(pin); }, time);  
+  setTimeout(function() { pin.writeSync(0); pin.unexport(); }, time);  
 }
 function stopMotor(p) {
   p.writeSync(0);
