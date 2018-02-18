@@ -28,5 +28,16 @@ $ npm install
 ```
 Modify the web socket address in `views/index.html` ([line 278](https://github.com/elaineo/Jellybean/blob/eb1c719d8ad8b485dc4b5b0ef19116f4374ae64b/jellybean-server/views/index.html#L278)) to match your server address. Change the port numbers in `app.js` to reflect your own ports.
 
+Run:
+```
+$ node app.js
+```
+
 ### Client
 The Raspberry Pi controllers are in this root directory. When you run `client.js`, it will create a socket connection to the web server (set this on [line 20](https://github.com/elaineo/Jellybean/blob/eb1c719d8ad8b485dc4b5b0ef19116f4374ae64b/app.js#L20)). Use `localhost` if the web server is hosted on the Pi.
+
+Run:
+```
+$ node client.js
+```
+The client will create a socket connection to the web server, which will issue messages for the Pi to activate its GPIO pins and turn the vending machine.
