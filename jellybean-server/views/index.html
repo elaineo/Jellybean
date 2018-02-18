@@ -208,6 +208,16 @@
           </div>
         </div>
     </div>
+    <div id="errorModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+            <div data-dismiss="modal" class="modal-body alert alert-danger" id="failBody">
+            </div>
+            </div>
+          </div>
+        </div>
+    </div>    
 
     <!-- JavaScript -->
     <script src="js/jquery-1.10.2.js"></script>
@@ -259,6 +269,11 @@
             url: '/invoice',
             success: function(response) {
               console.log(response);
+              if ("error" in response) {
+                $("div#failBody").html(response.error);
+                $("#errorModal").modal("show");
+                return;
+              }
               $("#payreq").text(response.invoice);
               var lntb = "lightning:" + response.invoice;
               var lnHTML = '<center><img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chld=M|0&chl=' + lntb + '"></center>';

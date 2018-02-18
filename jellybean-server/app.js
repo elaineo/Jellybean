@@ -51,13 +51,17 @@ lnclient.on('status', function(status) {
     console.log("Current status: " + status);
 });
 
-var options = {
-  key: fs.readFileSync('/etc/letsencrypt/live/beans4bits.com/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/beans4bits.com/cert.pem'),
-  ca: fs.readFileSync('/etc/letsencrypt/live/beans4bits.com/chain.pem')
-};
-
-var server = https.createServer(options, app);
+if (process.env.TEST) {
+  var server = http.createServer(app);
+}
+else {
+  var options = {
+    key: fs.readFileSync('/etc/letsencrypt/live/beans4bits.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/beans4bits.com/cert.pem'),
+    ca: fs.readFileSync('/etc/letsencrypt/live/beans4bits.com/chain.pem')
+  };
+  var server = https.createServer(options, app);
+}
 
 server.listen(app.get('port'), function() { 
     console.log((new Date()) + " Server is listening on port " + app.get('port'));
@@ -150,10 +154,13 @@ function generateInvoice(memo, value, response) {
       value: value,
     }, function(err, data) {
       console.log(data);
-      response.write(JSON.stringify({
-        'invoice': data.payment_request, 
-        'r_hash': protobuf.ByteBuffer.btoa(data.r_hash)
-      }));
+      if (err)
+        response.write(JSON.stringify({'error': err.details}));
+      else
+        response.write(JSON.stringify({
+          'invoice': data.payment_request, 
+          'r_hash': protobuf.ByteBuffer.btoa(data.r_hash)
+        }));
       response.end();
     })
 }
