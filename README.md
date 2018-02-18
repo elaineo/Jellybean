@@ -1,7 +1,7 @@
 # Jellybean
 
 **Ingredients needed**
- * [LND](https://github.com/lightningnetwork/lnd)
+ * [LND](https://github.com/lightningnetwork/lnd) Lightning implementation
  * Raspberry Pi 
  * A candy dispenser with electric motor
 
@@ -26,7 +26,7 @@ $ git clone https://github.com/elaineo/Jellybean
 $ cd Jellybean/jellybean-server
 $ npm install
 ```
-Modify the web socket address in `views/index.html` ([line 278](https://github.com/elaineo/Jellybean/blob/eb1c719d8ad8b485dc4b5b0ef19116f4374ae64b/jellybean-server/views/index.html#L278)) to match your server address. Change the port numbers in `app.js` to reflect your own ports.
+Modify the web socket address in `views/index.html` ([line 278](https://github.com/elaineo/Jellybean/blob/eb1c719d8ad8b485dc4b5b0ef19116f4374ae64b/jellybean-server/views/index.html#L278)) to match your server address. Change the port numbers in `app.js` to reflect your own ports. The server app opens a stream with the Lightning node, which will pass a message upon receiving new or settled invoices.
 
 Run:
 ```
@@ -40,4 +40,4 @@ Run:
 ```
 $ node client.js
 ```
-The client will create a socket connection to the web server, which will issue messages for the Pi to activate its GPIO pins and turn the vending machine.
+Once the client is connected, the server will issue messages for the Pi to activate its GPIO pins and turn the vending machine.
