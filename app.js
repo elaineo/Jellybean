@@ -1,11 +1,5 @@
 /*
     Vending machine physical controller */ 
-var express = require('express'); 
-var path = require('path'); 
-var logger = require('morgan'); 
-var bodyParser = require('body-parser'); 
-var app = express();
-
 var Gpio = require('onoff').Gpio; 
 
 var WebSocket = require('ws');
@@ -19,7 +13,7 @@ var LED_PIN = 26;
 var BEAN_PIN = 16; 
 
 // pi only 
-if ('test' == app.get('env')) {
+if (process.env.TEST) {
   var wsurl = 'ws://127.0.0.1:8080'
 }
 else {
@@ -28,12 +22,6 @@ else {
 
 var connection; 
 openSocket(0);
-
-app.set('port', process.env.PORT || 4000);
-
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 
 // Dispense goods
 function dispense (qty, pin) {
@@ -51,12 +39,6 @@ function stopMotor(p) {
   p.writeSync(0);
   p.unexport();
 }
-
-var http = require('http').Server(app);
-
-http.listen(app.get('port'), '0.0.0.0', function() {
-    console.log('Express server listening on port ' + app.get('port'));
-});
 
 function isConnected() {
   connection.send('ping!');
@@ -105,7 +87,7 @@ function openSocket(reconnectAttempts){
     }
           
     // not on the pi
-    if ('test' == app.get('env')) return;
+    if (process.env.TEST) return;
 
     amount = amount*100;
     dispense(amount, item);
