@@ -17,6 +17,8 @@ Vending machine and Raspberry Pi instructions [here](https://medium.com/@eiaine/
   </tr>
 </table>
 
+Note: Adafruit also sells a pre-assembled [motor controller board](https://www.adafruit.com/product/1940) which does the same thing, although I have not tried it myself. 
+
 ## Software
 
 ### Server
