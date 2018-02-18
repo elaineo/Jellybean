@@ -249,12 +249,8 @@
         if (qty!="") $("#bean-button").prop("disabled", false);
         var price = qty / 2000;
         $("#bean-price").val(price + " BTC");
-
-        var address = $("#bean-address").val();
-          qty = price * 100000000;
-          var price = $("#bean-price").val();
-          var btcHTML = '<p>'+ price + '<br>Your beans will be dispensed as soon as payment is confirmed.<\/p>';
-          $('#bean-total').html(btcHTML);
+        var btcHTML = '<p>'+ price + '<br>Your beans will be dispensed as soon as payment is confirmed.<\/p>';
+        $('#bean-total').html(btcHTML);
     }
 
     $("#bean-button").click(function(e) {
