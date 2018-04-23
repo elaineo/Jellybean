@@ -30,6 +30,12 @@ $ npm install
 ```
 Modify the web socket address in `views/index.html` ([line 278](https://github.com/elaineo/Jellybean/blob/eb1c719d8ad8b485dc4b5b0ef19116f4374ae64b/jellybean-server/views/index.html#L278)) to match your server address. Change the port numbers in `app.js` to reflect your own ports. The server app opens a stream with the Lightning node, which will pass a message upon receiving new or settled invoices.
 
+`process.env` variables:
+```
+NODE_TLS_REJECT_UNAUTHORIZED=0 
+GRPC_SSL_CIPHER_SUITES=ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384 
+```
+
 Run:
 ```
 $ node app.js
